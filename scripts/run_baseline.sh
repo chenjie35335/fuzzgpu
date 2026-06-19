@@ -6,14 +6,7 @@ PRJ_HOME=$(realpath "$SCRIPT_DIR/..")
 cd "$SCRIPT_DIR"
 TARGET_INSTR_COUNT=100000000000 # inf
 TARGET_TIME=1800 # 30 min
-JOBS=3
-
-# Configuration combinations: cross product of (vortex/32, ventus/32, vortex/64) and (line, toggle, expr)
-ARCH_XLEN_CONFIGS=(
-    #"vortex:32"
-    "ventus:32"
-    #"vortex:64"
-)
+JOBS=24
 
 COV_TYPES=(
     "line"
@@ -71,39 +64,25 @@ else
     echo "Running all methods: ${METHODS[*]}"
 fi
 
-# Iterate through all configuration combinations
-for arch_xlen in "${ARCH_XLEN_CONFIGS[@]}"; do
-    ARCH=$(echo $arch_xlen | cut -d: -f1)
-    XLEN=$(echo $arch_xlen | cut -d: -f2)
+# Set parameters for ventus
+NUM_GENBLOCKS=2
+NUM_GENWARPS_PER_BLOCK=4 # 8 allowed warps, but having writeback bugs in some cases
+
+# Iterate through all coverage types
+for COV_TYPE in "${COV_TYPES[@]}"; do
+    echo "=========================================="
+    echo "Running: COV_TYPE=$COV_TYPE"
+    echo "=========================================="
     
-    # Set parameters based on architecture
-    if [ "$ARCH" = "ventus" ]; then
-        NUM_GENBLOCKS=2
-        NUM_GENWARPS_PER_BLOCK=4 # 8 allowed warps, but having writeback bugs in some cases
-    elif [ "$ARCH" = "vortex" ]; then
-        NUM_GENBLOCKS=4 # nr_cores
-        NUM_GENWARPS_PER_BLOCK=4 # nr_warps_per_core
-    else
-        echo "Unsupported ARCH: $ARCH"
-        continue
-    fi
+    RESULTS_DIR="${PRJ_HOME}/results/baseline_results"
+    WORK_DIR="/tmp/baseline_work"
     
-    # Iterate through all coverage types
-    for COV_TYPE in "${COV_TYPES[@]}"; do
-        echo "=========================================="
-        echo "Running: ARCH=$ARCH, XLEN=$XLEN, COV_TYPE=$COV_TYPE"
-        echo "=========================================="
+    # Run selected methods
+    for METHOD in "${METHODS[@]}"; do
+        echo "----------------------------------------"
+        echo "Method: $METHOD"
+        echo "----------------------------------------"
         
-        RESULTS_DIR="${PRJ_HOME}/results/baseline_results"
-        WORK_DIR="/tmp/baseline_work"
-        
-        # Run selected methods
-        for METHOD in "${METHODS[@]}"; do
-            echo "----------------------------------------"
-            echo "Method: $METHOD"
-            echo "----------------------------------------"
-            
-            python baseline.py --arch ${ARCH} --xlen ${XLEN} --jobs $JOBS --target-instr-count $TARGET_INSTR_COUNT --target-time $TARGET_TIME --results-dir $RESULTS_DIR --work-dir $WORK_DIR --method $METHOD --num-genblocks $NUM_GENBLOCKS --num-genwarps-per-block $NUM_GENWARPS_PER_BLOCK --cov-type $COV_TYPE #--disable-emu-guide
-        done
+        python baseline.py --arch "ventus" --xlen 32 --jobs $JOBS --target-instr-count $TARGET_INSTR_COUNT --target-time $TARGET_TIME --results-dir $RESULTS_DIR --work-dir $WORK_DIR --method $METHOD --num-genblocks $NUM_GENBLOCKS --num-genwarps-per-block $NUM_GENWARPS_PER_BLOCK --cov-type $COV_TYPE #--disable-emu-guide
     done
 done
