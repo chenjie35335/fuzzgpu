@@ -18,6 +18,9 @@ OLDPWD_BASELINE_ENVS="$PWD"
 
 cd "$PRJ_HOME/baseline/cascade-meta" || return 1 2>/dev/null || exit 1
 source "$FUZZGPU_VENV/bin/activate" || return 1 2>/dev/null || exit 1
+
+# cascade-meta/env.sh appends variables such as LD_LIBRARY_PATH that may be
+# unset, so callers using set -u should source this script before enabling it.
 source "$PRJ_HOME/baseline/cascade-meta/env.sh" || return 1 2>/dev/null || exit 1
 
 # riscv64-unknown-elf-objcopy required by the cascade

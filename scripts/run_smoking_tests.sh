@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-set -u
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+# 
+source "$SCRIPT_DIR/baseline_envs.sh"
+
+set -u
+
 SMOKE_DIR="$SCRIPT_DIR/smoke"
 UNITS_DIR="$SMOKE_DIR/units"
-
-# Keep smoking tests self-contained like scripts/run_E*.sh. Cascade-related
-# units rely on CASCADE_ENV_SOURCED and the baseline Python environment.
-source "$SCRIPT_DIR/baseline_envs.sh"
 
 usage() {
   cat <<'EOF'

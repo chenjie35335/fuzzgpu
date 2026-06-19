@@ -1,5 +1,6 @@
 # Build from the repository root:
 #   docker build -t fuzzgpu-artifact .
+#
 # Optional proxy configuration:
 #   docker build --add-host=host.docker.internal:host-gateway \
 #     --build-arg http_proxy=http://host.docker.internal:7890 \
@@ -24,7 +25,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV http_proxy=${http_proxy}
 ENV https_proxy=${https_proxy}
 
-# home
+# goto home
 WORKDIR /root
 
 RUN apt-get update && apt-get install -y curl tmux ca-certificates
@@ -43,7 +44,7 @@ ENV SHELL=/bin/zsh
 
 RUN apt-get update && apt-get install -y git
 
-# install deps
+# install deps for vortex
 RUN apt-get install -y libreadline-dev uuid-dev pkg-config doxygen graphviz gcc g++ make cmake vim
 RUN apt-get install -y wget bzip2
 
@@ -53,7 +54,7 @@ RUN apt-get install -y \
     libfmt-dev libspdlog-dev libelf-dev libyaml-cpp-dev nlohmann-json3-dev \
     device-tree-compiler bsdmainutils ruby default-jdk python3-tqdm
 
-# deps for verilator
+# install deps for verilator
 RUN apt-get install -y build-essential
 RUN apt-get install -y \
   git help2man perl python3 make autoconf g++ flex bison ccache \
@@ -81,8 +82,8 @@ RUN apt-get install -y \
 
 RUN curl https://pyenv.run | bash
 
-RUN echo 'eval "$(pyenv init --path)"' >> /root/.bashrc && \
-    echo 'eval "$(pyenv init -)"' >> /root/.bashrc
+RUN echo 'eval "$(pyenv init --path)"' >> /root/.zshrc && \
+    echo 'eval "$(pyenv init -)"' >> /root/.zshrc
 
 RUN mkdir -p /root/tmp && \
     eval "$(pyenv init --path)" && \
@@ -104,6 +105,9 @@ COPY baseline/cascade-ventus /root/cascade-ventus
 COPY baseline/cascade-vortex32 /root/cascade-vortex32
 COPY baseline/cascade-vortex64 /root/cascade-vortex64
 
+# install deps for DiveFuzz
+RUN apt install -y libboost-regex-dev libboost-system-dev
+
 ################ copy source code
 COPY . /root/fuzzgpu
 
@@ -112,14 +116,17 @@ WORKDIR /root/fuzzgpu
 # checkout Verilator
 RUN git submodule update --init --depth 1 --recursive thirdparty/verilator
 
+# python packages for Cascade & DiveFuzz & FuzzGPU scripts
 RUN source /root/envs/bin/activate && \
     pip install --no-cache-dir -r requirements.txt
-
-RUN source /root/envs/bin/activate && \
-    baseline/DiveFuzz/ref/gpu-isa-emulator/build_all.sh
 
 # build all (ensure network connecting, it will download toolchain)
 RUN source /root/envs/bin/activate && \
     ./build.sh --all
 
-CMD ["/bin/bash"]
+# DiveFuzz refs
+RUN source /root/envs/bin/activate && \
+    baseline/DiveFuzz/ref/gpu-isa-emulator/build_all.sh
+
+
+CMD ["/bin/zsh"]
