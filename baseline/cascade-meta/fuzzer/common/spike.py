@@ -13,24 +13,16 @@ from functools import cache
 
 # Global emulator path, can be set via set_emulator_path()
 __emulator_path = 'emulator'
-__use_emulator_for_spike = False
 
 def set_emulator_path(path: str):
     """Set the path to the emulator executable."""
-    global __emulator_path, __use_emulator_for_spike
+    global __emulator_path
     if path:
         __emulator_path = path
-        __use_emulator_for_spike = True
-        if 'calibrate_spikespeed' in globals():
-            calibrate_spikespeed.cache_clear()
 
 def get_emulator_path() -> str:
     """Get the path to the emulator executable."""
     return __emulator_path
-
-def use_emulator_for_spike() -> bool:
-    """Return whether Spike-compatible calls should use the fuzzgpu emulator."""
-    return __use_emulator_for_spike
 
 SPIKE_STARTADDR = 0x80000000
 SPIKE_MEDELEG_MASK = 0xb3ff
@@ -351,30 +343,19 @@ def calibrate_spikespeed(numinstrs:int = 10000) -> list:
     elfpath = os.path.join(PATH_TO_TMP, 'spikespeedcalibration.elf')
     gen_elf(rv32i_jal(0, 0).to_bytes(4, 'little'), SPIKE_STARTADDR, SPIKE_STARTADDR, elfpath, False)
 
-    # run the Spike-compatible command
-    if use_emulator_for_spike():
-        spike_shell_command = (
-            get_emulator_path(),
-            "--emulate",
-            f"--dbg-cmd={path_to_debug_file}",
-            f"--elf={elfpath}",
-            "--elf-num-genblocks", '1',
-            "--elf-num-genwarps-per-block", '1',
-            "--elf-num-threads-per-warp", '1',
-        )
-    else:
-        spike_shell_command = (
-            "spike",
-            "-d",
-            f"--debug-cmd={path_to_debug_file}",
-            f"--isa={'rv32i'}",
-            f"--pc={SPIKE_STARTADDR}",
-            elfpath
-        )
+    # run the Spike command
+    spike_shell_command = (
+        "spike",
+        "-d",
+        f"--debug-cmd={path_to_debug_file}",
+        f"--isa={'rv32i'}",
+        f"--pc={SPIKE_STARTADDR}",
+        elfpath
+    )
     ns_before = time_ns()
     result = subprocess.run(spike_shell_command, capture_output=True)
     if result.returncode != 0:
-        raise Exception(f"Spike calibration process exited with code {result.returncode}.\nCommand: {' '.join(spike_shell_command)}\nstdout: {result.stdout.decode()}\nstderr: {result.stderr.decode()}")
+        raise Exception(f"Spike calibration process exited with code {result.returncode}")
     ns_elapsed = time_ns()-ns_before
 
     if not NO_REMOVE_TMPFILES:
