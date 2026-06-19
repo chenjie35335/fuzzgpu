@@ -23,11 +23,10 @@ source "$FUZZGPU_VENV/bin/activate" || return 1 2>/dev/null || exit 1
 # unset, so callers using set -u should source this script before enabling it.
 source "$PRJ_HOME/baseline/cascade-meta/env.sh" || return 1 2>/dev/null || exit 1
 
-# riscv64-unknown-elf-objcopy required by the cascade
-export PATH=$PATH:$PRJ_HOME/baseline/DiveFuzz/env/riscv/bin/
-# for vortex
-export PATH=$PATH:/home/ain/tools/riscv64-gnu-toolchain/bin
+export RISCV_TOOLCHAIN_ROOT="${RISCV_TOOLCHAIN_ROOT:-$HOME/tools/riscv64-gnu-toolchain}"
+export PATH=$RISCV_TOOLCHAIN_ROOT/bin:$PATH
 
 cd "$OLDPWD_BASELINE_ENVS" || return 1 2>/dev/null || exit 1
 
-export PATH=$PATH:/home/ain/fuzz_gpgpu/ventus-tools/verilator/bin
+export VERILATOR_ROOT="${VERILATOR_ROOT:-$HOME/tools/verilator}"
+export PATH=$VERILATOR_ROOT/bin:$PATH
