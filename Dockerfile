@@ -140,15 +140,15 @@ RUN cd targets/ventus-env && \
     tar -xf rodinia_data.tar.xz && \
     bash build-ventus.sh
 
+# build all (ensure network connecting, it will download toolchain)
+RUN source /root/envs/bin/activate && \
+    ./build.sh --all
+
 # DiveFuzz ref engines
 RUN source /root/envs/bin/activate && \
     cd baseline/DiveFuzz/ref/gpu-isa-emulator && \
     ./build_all.sh
 
-
-# build all (ensure network connecting, it will download toolchain)
-RUN source /root/envs/bin/activate && \
-    ./build.sh --all
 
 
 CMD ["/bin/zsh"]
