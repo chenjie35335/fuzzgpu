@@ -6,7 +6,7 @@ PRJ_HOME=$(realpath "$SCRIPT_DIR/..")
 cd "$SCRIPT_DIR"
 TARGET_INSTR_COUNT=100000000000 # basically unlimited
 TARGET_TIME=300
-JOBS=3
+JOBS=24
 SEED_MULTIPLIER=1000000 # Large multiplier to avoid seed overlap between runs
 DIVEFUZZ_MUTATION_TIMES=3
 
