@@ -1,7 +1,10 @@
 # Build from the repository root:
 #   docker build -t fuzzgpu-artifact .
 # Optional proxy configuration:
-#   docker build --build-arg https_proxy=http://127.0.0.1:7890 -t fuzzgpu-artifact .
+#   docker build --add-host=host.docker.internal:host-gateway \
+#     --build-arg http_proxy=http://host.docker.internal:7890 \
+#     --build-arg https_proxy=http://host.docker.internal:7890 \
+#     -t fuzzgpu-artifact .
 # (This may be needed if you encounter download errors or missing files)
 #
 # Run with a large executable tmpfs for experiment work directories:
@@ -15,7 +18,9 @@ ARG https_proxy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # set up PROXY (optional):
-#   docker build --build-arg https_proxy=http://127.0.0.1:7890 .
+#   docker build --add-host=host.docker.internal:host-gateway \
+#     --build-arg http_proxy=http://host.docker.internal:7890 \
+#     --build-arg https_proxy=http://host.docker.internal:7890 .
 ENV http_proxy=${http_proxy}
 ENV https_proxy=${https_proxy}
 
