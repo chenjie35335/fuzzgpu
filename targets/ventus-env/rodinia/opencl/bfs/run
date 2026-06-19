@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export DATA_DIR=../../data
+./bfs.out ${DATA_DIR}/bfs/graph1k.txt $@
