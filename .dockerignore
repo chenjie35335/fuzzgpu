@@ -8,6 +8,10 @@
 
 logs
 results
+!targets/ventus-env/**/logs/
+!targets/ventus-env/**/logs/**
+!targets/ventus-env/**/results/
+!targets/ventus-env/**/results/**
 trace
 
 *.log

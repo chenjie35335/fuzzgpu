@@ -2,6 +2,8 @@ build*/
 !targets/vortex/third_party/softfloat/build/
 !targets/vortex/third_party/softfloat/build/**
 results/
+!targets/ventus-env/**/results/
+!targets/ventus-env/**/results/**
 /trace/
 /tests/
 .vscode/
