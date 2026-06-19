@@ -14,6 +14,7 @@ scala-build/
 /artifact/
 __pycache__/
 *.log
+!targets/ventus-env/**/*.log
 /thirdparty/json.tar.xz
 
 # Generated bug repro artifacts

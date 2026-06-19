@@ -100,11 +100,6 @@ RUN apt-get install -y python3-virtualenv && \
 # Install makeelf for cascade
 RUN git clone https://github.com/flaviens/makeelf && cd makeelf && git checkout finercontrol && /root/envs/bin/python -m pip install --no-cache-dir .
 
-# cascade meta
-COPY baseline/cascade-ventus /root/cascade-ventus
-COPY baseline/cascade-vortex32 /root/cascade-vortex32
-COPY baseline/cascade-vortex64 /root/cascade-vortex64
-
 # install deps for DiveFuzz
 RUN apt install -y libboost-regex-dev libboost-system-dev
 
@@ -113,6 +108,11 @@ COPY . /root/fuzzgpu
 
 WORKDIR /root/fuzzgpu
 
+# cascade meta
+COPY baseline/cascade-ventus /cascade-ventus
+COPY baseline/cascade-vortex32 /cascade-vortex32
+COPY baseline/cascade-vortex64 /cascade-vortex64
+
 # checkout Verilator
 RUN git submodule update --init --depth 1 --recursive thirdparty/verilator
 
@@ -120,13 +120,29 @@ RUN git submodule update --init --depth 1 --recursive thirdparty/verilator
 RUN source /root/envs/bin/activate && \
     pip install --no-cache-dir -r requirements.txt
 
-# build all (ensure network connecting, it will download toolchain)
-RUN source /root/envs/bin/activate && \
-    ./build.sh --all
+# build Spike for Cascade
+RUN cd baseline/cascade-meta/tools/riscv-isa-sim && \
+    mkdir -p build && \
+    cd build && \
+    ../configure --prefix=/root/prefix-cascade/riscv && \
+    make -j"$(nproc)" && \
+    make install
+
+# build ventus-env toolchain and env
+RUN apt install -y libtool
+RUN cd targets/ventus-env && \
+    wget -O rodinia_data.tar.xz http://dspdev.ime.tsinghua.edu.cn/images/ventus_dataset/ventus_rodinia_data.tar.xz && \
+    tar -xf rodinia_data.tar.xz && \
+    bash build-ventus.sh
 
 # DiveFuzz refs
 RUN source /root/envs/bin/activate && \
     baseline/DiveFuzz/ref/gpu-isa-emulator/build_all.sh
+
+
+# build all (ensure network connecting, it will download toolchain)
+RUN source /root/envs/bin/activate && \
+    ./build.sh --all
 
 
 CMD ["/bin/zsh"]

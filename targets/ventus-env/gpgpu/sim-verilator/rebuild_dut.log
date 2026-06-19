@@ -1,0 +1,117 @@
+mkdir -p verilog-out-dft1
+cd /home/ain/fuzz_gpgpu/fuzzgpu/difftest-gpu/build32-ventus-dpi-ON && cmake .. -DDIFFTEST_XLEN=32 -DARCH=ventus -DCMAKE_BUILD_TYPE=Release -DENABLE_DPI=ON  && make -j
+cd .. && ./mill ventus[6.4.0].runMain top.paramToJson
+CMake Warning (dev) at CMakeLists.txt:82 (find_package):
+  Policy CMP0144 is not set: find_package uses upper-case <PACKAGENAME>_ROOT
+  variables.  Run "cmake --help-policy CMP0144" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  CMake variable VERILATOR_ROOT is set to:
+
+    /home/ain/fuzz_gpgpu/ventus-tools/verilator
+
+  For compatibility, find_package is ignoring the variable, but code in a
+  .cmake module might still use it.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Verilator version: 5.034
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/ain/fuzz_gpgpu/fuzzgpu/difftest-gpu/build32-ventus-dpi-ON
+make[1]: warning: -j0 forced in submake: resetting jobserver mode.
+make[1]: Entering directory '/home/ain/fuzz_gpgpu/fuzzgpu/difftest-gpu/build32-ventus-dpi-ON'
+make[2]: Entering directory '/home/ain/fuzz_gpgpu/fuzzgpu/difftest-gpu/build32-ventus-dpi-ON'
+make[3]: Entering directory '/home/ain/fuzz_gpgpu/fuzzgpu/difftest-gpu/build32-ventus-dpi-ON'
+make[3]: Leaving directory '/home/ain/fuzz_gpgpu/fuzzgpu/difftest-gpu/build32-ventus-dpi-ON'
+make[3]: Entering directory '/home/ain/fuzz_gpgpu/fuzzgpu/difftest-gpu/build32-ventus-dpi-ON'
+[  7%] Building CXX object CMakeFiles/difftest_gpu32.dir/csrc/dpi.cc.o
+[info] compiling 1 Scala source to /home/ain/fuzz_gpgpu/fuzzgpu/targets/ventus-env/gpgpu/out/ventus/6.4.0/compile.dest/classes ...
+[info] done compiling
+cd .. && ./mill ventus[6.4.0].runMain circt.stage.ChiselMain --module top.GPGPU_SimTop --target chirrtl --target-dir sim-verilator/verilog-out-dft1/
+[ 15%] Linking CXX static library libdifftest_gpu32.a
+make[3]: Leaving directory '/home/ain/fuzz_gpgpu/fuzzgpu/difftest-gpu/build32-ventus-dpi-ON'
+[100%] Built target difftest_gpu32
+make[2]: Leaving directory '/home/ain/fuzz_gpgpu/fuzzgpu/difftest-gpu/build32-ventus-dpi-ON'
+make[1]: Leaving directory '/home/ain/fuzz_gpgpu/fuzzgpu/difftest-gpu/build32-ventus-dpi-ON'
+[warn] ventus/src/cta/allocator.scala 251:41: [W004] Dynamic index with width 2 is too wide for Vec of size 2 (expected index width 1).
+[warn]       result_line_lds(j)  := rtcache_lds(cuid).size(j)  >= wg.num_lds
+[warn]                                         ^
+[warn] ventus/src/cta/allocator.scala 252:42: [W004] Dynamic index with width 2 is too wide for Vec of size 2 (expected index width 1).
+[warn]       result_line_sgpr(j) := rtcache_sgpr(cuid).size(j) >= wg.num_sgpr
+[warn]                                          ^
+[warn] ventus/src/cta/allocator.scala 253:42: [W004] Dynamic index with width 2 is too wide for Vec of size 2 (expected index width 1).
+[warn]       result_line_vgpr(j) := rtcache_vgpr(cuid).size(j) >= wg.num_vgpr
+[warn]                                          ^
+[warn] ventus/src/cta/allocator.scala 262:40: [W004] Dynamic index with width 2 is too wide for Vec of size 2 (expected index width 1).
+[warn]                                (!wgslot(cuid).andR) && (CONFIG.GPU.NUM_WF_SLOT.U - wfslot(cuid) >= wg.num_wf)
+[warn]                                        ^
+[warn] ventus/src/cta/allocator.scala 262:90: [W004] Dynamic index with width 2 is too wide for Vec of size 2 (expected index width 1).
+[warn]                                (!wgslot(cuid).andR) && (CONFIG.GPU.NUM_WF_SLOT.U - wfslot(cuid) >= wg.num_wf)
+[warn]                                                                                          ^
+[warn] ventus/src/pipeline/operandCollector.scala 505:13: [W004] Dynamic index with width 8 is too wide for Vec of size 8 (expected index width 3).
+[warn]       io.out(outV_sel).bits := io.in(0).bits
+[warn]             ^
+[warn] ventus/src/pipeline/operandCollector.scala 506:13: [W004] Dynamic index with width 8 is too wide for Vec of size 8 (expected index width 3).
+[warn]       io.out(outV_sel).valid := io.in(0).valid
+[warn]             ^
+[warn] ventus/src/pipeline/operandCollector.scala 509:13: [W004] Dynamic index with width 8 is too wide for Vec of size 8 (expected index width 3).
+[warn]       io.out(outX_sel).bits := io.in(1).bits
+[warn]             ^
+[warn] ventus/src/pipeline/operandCollector.scala 510:13: [W004] Dynamic index with width 8 is too wide for Vec of size 8 (expected index width 3).
+[warn]       io.out(outX_sel).valid := io.in(1).valid
+[warn]             ^
+[warn] ventus/src/pipeline/scoreboard.scala 86:33: [W003] Dynamic index with width 1 is too small for extractee of width 256
+[warn]   def read(addr: UInt): Bool = r(addr)
+[warn]                                 ^
+[warn] ventus/src/pipeline/scoreboard.scala 86:33: [W002] Dynamic index with width 1 is too large for extractee of width 1
+[warn]   def read(addr: UInt): Bool = r(addr)
+[warn]                                 ^
+[warn] ventus/src/L1Cache/ICache/ICacheMSHR.scala 216:19: [W004] Dynamic index with width 3 is too wide for Vec of size 4 (expected index width 2).
+[warn]       has_send2mem(i.U) := true.B
+[warn]                   ^
+[warn] ventus/src/L1Cache/ICache/ICacheMSHR.scala 218:19: [W004] Dynamic index with width 3 is too wide for Vec of size 4 (expected index width 2).
+[warn]       has_send2mem(i.U) := false.B//missRsp, L2 to core
+[warn]                   ^
+[warn] ventus/src/L1Cache/ICache/ICacheMSHR.scala 224:35: [W004] Dynamic index with width 5 is too wide for Vec of size 4 (expected index width 2).
+[warn]   missRspIn_bA := blockAddr_Access(io.missRspIn.bits.EntryIdx)
+[warn]                                   ^
+[warn] ventus/src/L1Cache/L1MSHR.scala 300:40: [W004] Dynamic index with width 2 is too wide for Vec of size 2 (expected index width 1).
+[warn]     targetInfo_Accesss(real_SRAMAddrUp)(real_SRAMAddrDown) := io.missReq.bits.targetInfo
+[warn]                                        ^
+[warn] ventus/src/L2cache/Directory_test.scala 143:22: [W004] Dynamic index with width 5 is too wide for Vec of size 16 (expected index width 4).
+[warn]   val flush_tag =ways(flush_way).tag
+[warn]                      ^
+[warn] ventus/src/L2cache/Directory_test.scala 144:95: [W004] Dynamic index with width 11 is too wide for Vec of size 64 (expected index width 6).
+[warn]   when(io.flush || io.invalidate  || (flush_issue_reg&& (io.result.fire || !RegNext(status_reg(flush_set).dirty(flush_way), false.B)))){
+[warn]                                                                                               ^
+[warn] ventus/src/L2cache/Directory_test.scala 144:112: [W004] Dynamic index with width 5 is too wide for Vec of size 16 (expected index width 4).
+[warn]   when(io.flush || io.invalidate  || (flush_issue_reg&& (io.result.fire || !RegNext(status_reg(flush_set).dirty(flush_way), false.B)))){
+[warn]                                                                                                                ^
+[warn] ventus/src/L2cache/Directory_test.scala 290:93: [W004] Dynamic index with width 11 is too wide for Vec of size 64 (expected index width 6).
+[warn]   io.result.valid := Mux(flush_issue_regnext, io.result.bits.last_flush|| RegNext(status_reg(flush_set).dirty(flush_way) && flush_issue, false.B), valid_signal)
+[warn]                                                                                             ^
+[warn] ventus/src/L2cache/Directory_test.scala 290:110: [W004] Dynamic index with width 5 is too wide for Vec of size 16 (expected index width 4).
+[warn]   io.result.valid := Mux(flush_issue_regnext, io.result.bits.last_flush|| RegNext(status_reg(flush_set).dirty(flush_way) && flush_issue, false.B), valid_signal)
+[warn]                                                                                                              ^
+[warn] ventus/src/L2cache/Directory_test.scala 304:70: [W004] Dynamic index with width 11 is too wide for Vec of size 64 (expected index width 6).
+[warn]   io.result.bits.dirty  :=Mux(flush_issue_regnext, RegNext(status_reg(flush_set).dirty(flush_way), false.B), Mux(not_replace,false.B,(status_reg(set).dirty(io.result.bits.way)).asBool))
+[warn]                                                                      ^
+[warn] ventus/src/L2cache/Directory_test.scala 304:87: [W004] Dynamic index with width 5 is too wide for Vec of size 16 (expected index width 4).
+[warn]   io.result.bits.dirty  :=Mux(flush_issue_regnext, RegNext(status_reg(flush_set).dirty(flush_way), false.B), Mux(not_replace,false.B,(status_reg(set).dirty(io.result.bits.way)).asBool))
+[warn]                                                                                       ^
+[warn] ventus/src/L2cache/Scheduler.scala 116:54: [W004] Dynamic index with width 16 is too wide for Vec of size 32 (expected index width 5).
+[warn]   sinkD.io.way := VecInit(mshrs.map(_.io.status.way))(sinkD.io.source)
+[warn]                                                      ^
+[warn] ventus/src/L2cache/Scheduler.scala 117:54: [W004] Dynamic index with width 16 is too wide for Vec of size 32 (expected index width 5).
+[warn]   sinkD.io.set := VecInit(mshrs.map(_.io.status.set))(sinkD.io.source)
+[warn]                                                      ^
+[warn] ventus/src/L2cache/Scheduler.scala 118:60: [W004] Dynamic index with width 16 is too wide for Vec of size 32 (expected index width 5).
+[warn]   sinkD.io.opcode := VecInit(mshrs.map(_.io.status.opcode))(sinkD.io.source)
+[warn]                                                            ^
+[warn] ventus/src/L2cache/Scheduler.scala 119:54: [W004] Dynamic index with width 16 is too wide for Vec of size 32 (expected index width 5).
+[warn]   sinkD.io.put := VecInit(mshrs.map(_.io.status.put))(sinkD.io.source)
+[warn]                                                      ^
+[warn] There were 26 warning(s) during hardware elaboration.
+cd verilog-out-dft1/ && firtool --split-verilog GPGPU_SimTop.fir -o .
+/bin/sh: 1: firtool: not found
+make: *** [dut.mk:262: verilog-out-dft1/dut.sv] Error 127

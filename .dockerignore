@@ -11,6 +11,7 @@ results
 trace
 
 *.log
+!targets/ventus-env/**/*.log
 *.vcd
 *.fst
 *.coverage.dat
