@@ -652,7 +652,7 @@ def print_summary(all_results: Dict[str, AblationResults]):
     print(f"{GREEN}{'='*80}{RESET}\n")
     
     # Table header
-    header = f"{'Config':<20} {'Tests':>8} {'Success':>8} {'Compl.Rate':>12} {'SIMT Depth':>12} {'Diverg.Rate':>12} {'Barriers':>12} {'Bugs':>8}"
+    header = f"{'Config':<20} {'Tests':>8} {'Success':>8} {'Compl.Rate':>12} {'SIMT Depth':>12} {'Diverg.Rate':>12} {'Barriers':>12}"
     print(header)
     print("-" * len(header))
     
@@ -669,24 +669,10 @@ def print_summary(all_results: Dict[str, AblationResults]):
         simt_depth = stats.get('max_simt_stack_depth', {}).get('median', 0)
         diverg_rate = stats.get('thread_divergence_rate', {}).get('median', 0)
         barrier_count = stats.get('barrier_success_count', {}).get('median', 0)
-        num_bugs = stats.get('num_bugs_found', 0)
         
-        row = f"{config_name:<20} {num_tests:>8} {num_success:>8} {compl_rate:>12.4f} {simt_depth:>12.2f} {diverg_rate:>12.4f} {barrier_count:>12.2f} {num_bugs:>8}"
+        row = f"{config_name:<20} {num_tests:>8} {num_success:>8} {compl_rate:>12.4f} {simt_depth:>12.2f} {diverg_rate:>12.4f} {barrier_count:>12.2f}"
         print(row)
-    
-    # Print bug discovery details if any bugs found
-    has_bugs = any(results and results.bug_discoveries for results in all_results.values())
-    if has_bugs:
-        print(f"\n{GREEN}Bug Discovery Details:{RESET}")
-        for config_name, results in all_results.items():
-            if results is None or not results.bug_discoveries:
-                continue
-            print(f"\n  {config_name}:")
-            for bug_name, record in sorted(results.bug_discoveries.items(), 
-                                           key=lambda x: x[1].first_detection_time):
-                print(f"    - {bug_name}: seed={record.first_detection_seed}, "
-                      f"time={record.first_detection_time:.1f}s")
-    
+
     print()
 
 

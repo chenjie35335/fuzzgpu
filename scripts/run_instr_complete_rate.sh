@@ -17,8 +17,8 @@ ARCH_XLEN_CONFIGS=(
 
 # Methods to run
 METHODS=(
-    #"fuzzgpu"
-    #"cascade"
+    "fuzzgpu"
+    "cascade"
     "divefuzz"
 )
 
