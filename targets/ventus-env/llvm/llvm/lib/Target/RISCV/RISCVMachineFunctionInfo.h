@@ -1,0 +1,122 @@
+//=- RISCVMachineFunctionInfo.h - RISCV machine function info -----*- C++ -*-=//
+//
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
+//
+// This file declares RISCV-specific per-machine-function information.
+//
+//===----------------------------------------------------------------------===//
+
+#ifndef LLVM_LIB_TARGET_RISCV_RISCVMACHINEFUNCTIONINFO_H
+#define LLVM_LIB_TARGET_RISCV_RISCVMACHINEFUNCTIONINFO_H
+
+#include "RISCVSubtarget.h"
+#include "llvm/CodeGen/MIRYamlMapping.h"
+#include "llvm/CodeGen/MachineFrameInfo.h"
+#include "llvm/CodeGen/MachineFunction.h"
+
+namespace llvm {
+
+class RISCVMachineFunctionInfo;
+
+namespace yaml {
+struct RISCVMachineFunctionInfo final : public yaml::MachineFunctionInfo {
+  int VarArgsFrameIndex;
+  int VarArgsSaveSize;
+  bool IsEntryFunction = false;
+
+  RISCVMachineFunctionInfo() = default;
+  RISCVMachineFunctionInfo(const llvm::RISCVMachineFunctionInfo &MFI);
+
+  void mappingImpl(yaml::IO &YamlIO) override;
+  ~RISCVMachineFunctionInfo() = default;
+};
+
+template <> struct MappingTraits<RISCVMachineFunctionInfo> {
+  static void mapping(IO &YamlIO, RISCVMachineFunctionInfo &MFI) {
+    YamlIO.mapOptional("varArgsFrameIndex", MFI.VarArgsFrameIndex);
+    YamlIO.mapOptional("varArgsSaveSize", MFI.VarArgsSaveSize);
+    YamlIO.mapOptional("isEntryFunction", MFI.IsEntryFunction, false);
+  }
+};
+} // end namespace yaml
+
+/// RISCVMachineFunctionInfo - This class is derived from MachineFunctionInfo
+/// and contains private RISCV-specific information for each MachineFunction.
+class RISCVMachineFunctionInfo : public MachineFunctionInfo {
+private:
+  /// FrameIndex for start of varargs area
+  int VarArgsFrameIndex = 0;
+  /// Size of the save area used for varargs
+  int VarArgsSaveSize = 0;
+  /// OpenCL kernel. i.e. functions called by the hardware and not called
+  /// by other functions.
+  bool IsEntryFunction = false;
+  /// FrameIndex used for transferring values between 64-bit FPRs and a pair
+  /// of 32-bit GPRs via the stack.
+  int MoveF64FrameIndex = -1;
+  /// FrameIndex of the spill slot for the scratch register in BranchRelaxation.
+  int BranchRelaxationScratchFrameIndex = -1;
+  /// Size of any opaque stack adjustment due to save/restore libcalls.
+  unsigned LibCallStackSize = 0;
+
+  /// Registers that have been sign extended from i32.
+  SmallVector<Register, 8> SExt32Registers;
+
+public:
+  RISCVMachineFunctionInfo(const MachineFunction &MF) {
+        CallingConv::ID CC = MF.getFunction().getCallingConv();
+        IsEntryFunction = CC == CallingConv::SPIR_KERNEL ||
+                          CC == CallingConv::VENTUS_KERNEL;
+      }
+
+  MachineFunctionInfo *
+  clone(BumpPtrAllocator &Allocator, MachineFunction &DestMF,
+        const DenseMap<MachineBasicBlock *, MachineBasicBlock *> &Src2DstMBB)
+      const override;
+
+  int getVarArgsFrameIndex() const { return VarArgsFrameIndex; }
+  void setVarArgsFrameIndex(int Index) { VarArgsFrameIndex = Index; }
+
+  unsigned getVarArgsSaveSize() const { return VarArgsSaveSize; }
+  void setVarArgsSaveSize(int Size) { VarArgsSaveSize = Size; }
+
+  bool isEntryFunction() const { return IsEntryFunction; }
+
+  int getMoveF64FrameIndex(MachineFunction &MF) {
+    if (MoveF64FrameIndex == -1)
+      MoveF64FrameIndex =
+          MF.getFrameInfo().CreateStackObject(8, Align(8), false);
+    return MoveF64FrameIndex;
+  }
+
+  int getBranchRelaxationScratchFrameIndex() const {
+    return BranchRelaxationScratchFrameIndex;
+  }
+  void setBranchRelaxationScratchFrameIndex(int Index) {
+    BranchRelaxationScratchFrameIndex = Index;
+  }
+
+  unsigned getLibCallStackSize() const { return LibCallStackSize; }
+  void setLibCallStackSize(unsigned Size) { LibCallStackSize = Size; }
+
+  bool useSaveRestoreLibCalls(const MachineFunction &MF) const {
+    // We cannot use fixed locations for the callee saved spill slots if the
+    // function uses a varargs save area, or is an interrupt handler.
+    return MF.getSubtarget<RISCVSubtarget>().enableSaveRestore() &&
+           VarArgsSaveSize == 0 && !MF.getFrameInfo().hasTailCall() &&
+           !MF.getFunction().hasFnAttribute("interrupt");
+  }
+
+  void initializeBaseYamlFields(const yaml::RISCVMachineFunctionInfo &YamlMFI);
+
+  void addSExt32Register(Register Reg);
+  bool isSExt32Register(Register Reg) const;
+};
+
+} // end namespace llvm
+
+#endif // LLVM_LIB_TARGET_RISCV_RISCVMACHINEFUNCTIONINFO_H

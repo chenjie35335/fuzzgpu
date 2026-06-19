@@ -1,0 +1,22 @@
+fuzzgpu_subproject_deps = \
+  fesvr \
+  riscv \
+  disasm \
+  customext \
+  fdt \
+  softfloat \
+  spike_dasm \
+
+fuzzgpu_hdrs = \
+  workgroup.h
+
+fuzzgpu_hdrs = \
+  workgroup.h
+
+fuzzgpu_install_hdrs = $(fuzzgpu_hdrs) 
+
+fuzzgpu_srcs = \
+  isa_emulator.cc \
+  workgroup.cc
+
+fuzzgpu_install_shared_lib = yes

@@ -1,0 +1,37 @@
+{
+    "vortex": {
+        "32": [
+            "czero",
+            "wb_fp_rd_zero",
+            "vx_wmma",
+            "jalr_align",
+            "sra"
+        ],
+        "64": [
+            "czero",
+            "wb_fp_rd_zero",
+            "vx_wmma",
+            "jalr_align",
+            "sra"
+        ]
+    },
+    "ventus": {
+        "32": [
+            "vmv_x_s",
+            "vmsgt_vx_vmsgtu_vx",
+            "var_thread_num",
+            "vmask",
+            "vec_nfield",
+            "amo_dec",
+            "ventus_hw_vfmax",
+            "ventus_hw_vmulhsu_vv",
+            "ventus_hw_vmulhsu_vx",
+            "ventus_hw_mulhsu",
+            "ventus_hw_vmulhu_vx",
+            "ventus_hw_vmulhu_vv",
+            "ventus_hw_mulhu",
+            "vftta_vv_wb",
+            "csr_misa"
+        ]
+    }
+}

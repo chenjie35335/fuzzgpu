@@ -1,0 +1,7 @@
+<map id="difftest::Trace" name="difftest::Trace">
+<area shape="rect" id="Node000001" title="One instruction execution trace emitted by the ISA emulator." alt="" coords="25,183,135,208"/>
+<area shape="rect" id="Node000002" href="$classdifftest_1_1VarBitset.html" title="Variable&#45;size bitset used for thread and warp masks." alt="" coords="13,80,147,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,119,83,183,77,183,77,119"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,5,155,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="83,45,83,80,77,80,77,45"/>
+</map>

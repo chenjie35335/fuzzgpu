@@ -1,0 +1,9 @@
+<map id="include/isa/riscv/ventus/csr.hh" name="include/isa/riscv/ventus/csr.hh">
+<area shape="rect" id="Node000001" title=" " alt="" coords="141,5,316,45"/>
+<area shape="rect" id="Node000002" href="$fuzzer__state_8cc.html" title=" " alt="" coords="5,93,148,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="181,54,100,96,98,91,179,49"/>
+<area shape="rect" id="Node000003" href="$gen__csr_8cc.html" title=" " alt="" coords="173,93,285,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="231,59,231,93,226,93,226,59"/>
+<area shape="rect" id="Node000004" href="$gen__warp_8cc.html" title=" " alt="" coords="309,93,436,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="276,49,353,91,350,95,274,54"/>
+</map>

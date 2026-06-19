@@ -1,0 +1,60 @@
+====================================================================================================
+COVERAGE ANALYSIS SUMMARY REPORT
+====================================================================================================
+
+Total files analyzed: 260
+Total lines with coverage data: 18,374
+Total covered lines: 8,505 (46.29%)
+Total uncovered lines: 9,869 (53.71%)
+
+====================================================================================================
+TOP 20 FILES WITH LOWEST COVERAGE
+====================================================================================================
+File                                        Total  Covered  Uncovered   Coverage
+----------------------------------------------------------------------------------------------------
+Arbiter2_DCacheCoreRsp_np.sv                   66        0         66      0.00%
+DataCrossbar.sv                                64        0         64      0.00%
+FCMA_ADD_s1_32.sv                               2        0          2      0.00%
+FMA_1.sv                                        1        0          1      0.00%
+ImmGen.sv                                       1        0          1      0.00%
+Queue1_tagCheckerResult.sv                      3        0          3      0.00%
+RoundingUnit.sv                                 1        0          1      0.00%
+RoundingUnit_256.sv                             1        0          1      0.00%
+SRAMTemplate_3.sv                               1        0          1      0.00%
+TCDotProduct_1.sv                               1        0          1      0.00%
+TininessRounder.sv                              1        0          1      0.00%
+SharedMemory.sv                               351        7        344      1.99%
+Queue32_ShareMemCoreRsp.sv                    113        4        109      3.54%
+Queue1_Vec32_UInt32.sv                         72        3         69      4.17%
+RRArbiter_9.sv                                978       41        937      4.19%
+crossBar.sv                                   849       38        811      4.48%
+SRAMTemplate_37.sv                             21        1         20      4.76%
+DualIssueIO.sv                               1005       51        954      5.07%
+collectorUnit.sv                             1043       70        973      6.71%
+RRArbiter_11.sv                               353       35        318      9.92%
+
+====================================================================================================
+TOP 20 FILES WITH MOST UNCOVERED LINES
+====================================================================================================
+File                                      Uncovered    Total   Coverage
+----------------------------------------------------------------------------------------------------
+Directory_test.sv                              1043     3210     67.51%
+collectorUnit.sv                                973     1043      6.71%
+DualIssueIO.sv                                  954     1005      5.07%
+RRArbiter_9.sv                                  937      978      4.19%
+crossBar.sv                                     811      849      4.48%
+L1TagAccess.sv                                  734     2516     70.83%
+SharedMemory.sv                                 344      351      1.99%
+ibuffer2issue.sv                                326      370     11.89%
+RRArbiter_11.sv                                 318      353      9.92%
+InstrBufferV2.sv                                311      349     10.89%
+L1TagAccess_ICache.sv                           256      771     66.80%
+resource_table_handler.sv                       188      304     38.16%
+resource_table_handler_2.sv                     188      304     38.16%
+resource_table_handler_4.sv                     188      304     38.16%
+InstrDecodeV2.sv                                150      208     27.88%
+instDemux.sv                                    136      241     43.57%
+warp_scheduler.sv                               134      261     48.66%
+Queue32_ShareMemCoreRsp.sv                      109      113      3.54%
+RRArbiter_1.sv                                   79       94     15.96%
+LSUexe.sv                                        78      100     22.00%

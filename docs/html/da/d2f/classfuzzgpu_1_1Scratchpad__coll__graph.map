@@ -1,0 +1,50 @@
+<map id="fuzzgpu::Scratchpad" name="fuzzgpu::Scratchpad">
+<area shape="rect" id="Node000001" title="per&#45;warp scratchpad for code emission" alt="" coords="785,531,938,556"/>
+<area shape="rect" id="Node000002" href="$d9/de5/classfuzzgpu_1_1GenWarp.html" title="Mutable state and helpers for generating one warp&#39;s instruction stream." alt="" coords="1137,549,1277,575"/>
+<area shape="poly" id="edge13_Node000002_Node000001" title=" " alt="" coords="918,557,995,573,1054,576,1113,573,1137,570,1138,576,1114,578,1054,582,994,578,917,562"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1124,560,938,550,938,545,1124,555"/>
+<area shape="rect" id="Node000003" href="$d8/d5c/classfuzzgpu_1_1FuzzerState.html" title="Fuzzer state shared across the fuzzer components." alt="" coords="783,235,940,260"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="904,264,1006,321,1063,361,1115,407,1146,444,1171,484,1203,548,1198,550,1166,486,1141,447,1111,411,1060,365,1003,325,902,268"/>
+<area shape="rect" id="Node000004" href="$de/d1c/classfuzzgpu_1_1BitsSampler.html" title="Caches uniform integer samplers for fixed bit widths." alt="" coords="359,235,519,260"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="533,245,783,245,783,250,533,250"/>
+<area shape="rect" id="Node000005" href="$d7/dd0/classfuzzgpu_1_1RandomMemoryAllocator.html" title="Random non&#45;overlapping allocator for generated code/data memory." alt="" coords="316,284,563,309"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="576,282,728,265,782,257,783,262,728,270,576,287"/>
+<area shape="rect" id="Node000006" href="$dd/d9f/classdifftest_1_1ISAEmulator.html" title="Opaque wrapper around the target ISA emulator implementation." alt="" coords="361,399,518,424"/>
+<area shape="poly" id="edge23_Node000001_Node000006" title=" " alt="" coords="532,419,654,437,703,447,730,457,740,472,743,488,745,503,754,516,785,533,783,538,750,520,740,505,738,489,736,474,726,461,701,452,653,442,531,425"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="531,401,628,384,678,369,727,350,764,329,797,304,846,258,850,262,801,308,767,334,729,355,680,374,629,389,532,406"/>
+<area shape="rect" id="Node000007" href="$db/d9b/classdifftest_1_1ProgramOrder.html" title="Per&#45;thread program order of load/store events." alt="" coords="356,333,523,359"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="536,335,629,322,727,301,785,280,834,258,836,262,787,285,729,306,630,328,537,341"/>
+<area shape="rect" id="Node000008" href="$da/d98/structdifftest_1_1StoreTrace.html" title="Byte&#45;level store trace indexed by LoadStoreId." alt="" coords="367,5,511,31"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="526,16,574,20,627,30,680,46,729,70,754,88,775,109,812,155,840,199,857,233,852,235,835,202,808,158,772,112,750,92,727,75,678,51,626,35,574,26,525,21"/>
+<area shape="rect" id="Node000009" href="$de/d18/classfuzzgpu_1_1LoadStoreOperandHistoryIndex.html" title="Indexed sliding window of load/store operand histories." alt="" coords="339,55,540,95"/>
+<area shape="poly" id="edge8_Node000003_Node000009" title=" " alt="" coords="554,83,642,101,686,115,729,133,767,156,802,184,851,233,847,236,798,188,764,160,727,138,685,120,640,106,553,88"/>
+<area shape="rect" id="Node000010" href="$db/db2/classfuzzgpu_1_1InstrPool.html" title="Arena allocator for generated RISC&#45;V instruction objects." alt="" coords="370,120,509,145"/>
+<area shape="poly" id="edge9_Node000003_Node000010" title=" " alt="" coords="523,141,622,159,729,186,788,209,837,232,835,237,786,214,727,191,621,164,522,146"/>
+<area shape="rect" id="Node000011" href="$d4/dc7/classfuzzgpu_1_1InstrPool_1_1Chunk.html" title="Fixed&#45;size allocation chunk inside the instruction arena. Chunk currently receiving new instructions." alt="" coords="11,113,149,153"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="163,130,370,130,370,135,163,135"/>
+<area shape="rect" id="Node000012" href="$d7/df8/structfuzzgpu_1_1FuzzerState_1_1Stat.html" title="Aggregated generation statistics." alt="" coords="361,170,518,210"/>
+<area shape="poly" id="edge11_Node000003_Node000012" title=" " alt="" coords="532,199,728,225,783,233,782,238,728,230,531,204"/>
+<area shape="rect" id="Node000013" href="$d8/d18/classfuzzgpu_1_1RegisterSampler.html" title="Samples source and destination registers under mask constraints." alt="" coords="767,481,956,507"/>
+<area shape="poly" id="edge12_Node000002_Node000013" title=" " alt="" coords="970,502,1041,513,1114,527,1175,547,1173,552,1113,533,1041,518,970,507"/>
+<area shape="rect" id="Node000014" href="$dc/dac/classdifftest_1_1Trace.html" title="One instruction execution trace emitted by the ISA emulator." alt="" coords="806,419,917,444"/>
+<area shape="poly" id="edge14_Node000002_Node000014" title=" " alt="" coords="930,424,973,424,1021,429,1069,439,1115,457,1144,477,1168,502,1201,548,1197,551,1164,505,1140,481,1112,462,1067,444,1020,434,973,430,930,429"/>
+<area shape="rect" id="Node000015" href="$d1/d43/classdifftest_1_1VarBitset.html" title="Variable&#45;size bitset used for thread and warp masks." alt="" coords="372,471,507,496"/>
+<area shape="poly" id="edge15_Node000014_Node000015" title=" " alt="" coords="511,496,560,502,615,504,672,500,727,486,739,477,751,466,810,442,812,447,753,471,742,482,729,491,673,505,616,509,560,507,511,501"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="5,471,155,496"/>
+<area shape="poly" id="edge16_Node000015_Node000016" title=" " alt="" coords="168,481,372,481,372,486,168,486"/>
+<area shape="rect" id="Node000017" href="$d4/de2/structfuzzgpu_1_1GenWarp_1_1BasicBlockSnapshot.html" title="Snapshot of basic&#45;block emission progress." alt="" coords="752,605,971,645"/>
+<area shape="poly" id="edge17_Node000002_Node000017" title=" " alt="" coords="985,616,1049,608,1113,595,1178,572,1180,577,1114,601,1049,613,985,621"/>
+<area shape="rect" id="Node000018" href="$d0/dbb/structfuzzgpu_1_1MemoryBlock.html" title="Closed address interval allocated from a code or data range." alt="" coords="354,599,525,624"/>
+<area shape="poly" id="edge24_Node000001_Node000018" title=" " alt="" coords="532,594,784,553,785,558,533,599"/>
+<area shape="poly" id="edge18_Node000017_Node000018" title=" " alt="" coords="539,623,587,627,657,629,728,627,752,627,752,632,728,633,657,635,587,633,538,628"/>
+<area shape="rect" id="Node000019" href="$d7/d93/classfuzzgpu_1_1GenWarp_1_1SIMIStack.html" title="Stack of pending SIMT reconvergence states. Pending SIMT divergence stack." alt="" coords="755,669,967,695"/>
+<area shape="poly" id="edge19_Node000002_Node000019" title=" " alt="" coords="980,670,1047,657,1112,634,1158,604,1192,573,1196,577,1162,609,1115,639,1048,662,981,676"/>
+<area shape="rect" id="Node000020" title=" " alt="" coords="349,667,530,692"/>
+<area shape="poly" id="edge20_Node000019_Node000020" title=" " alt="" coords="544,677,755,679,755,684,544,683"/>
+<area shape="rect" id="Node000021" href="$dc/dba/structfuzzgpu_1_1GenWarp_1_1SIMIStack_1_1Stat.html" title="Statistics for SIMT stack depth." alt="" coords="333,717,545,757"/>
+<area shape="poly" id="edge21_Node000019_Node000021" title=" " alt="" coords="559,720,728,698,771,692,772,697,728,703,559,725"/>
+<area shape="rect" id="Node000022" href="$d9/dd8/classfuzzgpu_1_1RegDepTracker.html" title="Tracks register data flow to derive load/store dependencies." alt="" coords="772,719,951,744"/>
+<area shape="poly" id="edge22_Node000002_Node000022" title=" " alt="" coords="964,729,1040,716,1077,704,1112,686,1143,661,1167,630,1198,574,1203,576,1172,633,1146,665,1115,691,1079,709,1041,721,965,734"/>
+<area shape="rect" id="Node000023" href="$de/da0/classfuzzgpu_1_1Scratchpad_1_1MemoryFragment.html" title="Contiguous emitted byte fragment within a memory block." alt="" coords="363,521,516,561"/>
+<area shape="poly" id="edge25_Node000001_Node000023" title=" " alt="" coords="530,539,784,540,784,546,530,544"/>
+</map>

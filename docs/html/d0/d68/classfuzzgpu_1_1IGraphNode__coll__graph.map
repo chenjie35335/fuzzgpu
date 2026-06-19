@@ -1,0 +1,5 @@
+<map id="fuzzgpu::IGraphNode" name="fuzzgpu::IGraphNode">
+<area shape="rect" id="Node000001" title="Node in a generated instruction control&#45;flow graph." alt="" coords="5,123,164,148"/>
+<area shape="rect" id="Node000002" href="$d5/d48/classfuzzgpu_1_1riscv__instr.html" title="Concrete RISC&#45;V instruction with assigned operands." alt="" coords="11,5,159,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="87,44,87,123,82,123,82,44"/>
+</map>

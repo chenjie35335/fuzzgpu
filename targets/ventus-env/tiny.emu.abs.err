@@ -1,0 +1,39 @@
+to allocate at 0x70000000 with 134217728 bytes 
+to allocate at 0x70000000 with 268435456 bytes 
+to allocate at 0x80000000 with 2147483648 bytes 
+arg gpgpu is numw:1,numt:4,numwg:1,kernelx:1,kernely:1,kernelz:1,ldssize:0x20000,pdssize:0x4000,pdsbase:0x78000000,knlbase:0x0,currwgid:0
+vaddr mem scope is -m0x70000000:0x100000000
+run log is written to 
+spike -l -l -p1 --isa rv32gcv_zfh --pc=0x80000000 -m0x70000000:0x100000000 --varch vlen:128,elen:32 --gpgpuarch numw:1,numt:4,numwg:1,kernelx:1,kernely:1,kernelz:1,ldssize:0x20000,pdssize:0x4000,pdsbase:0x78000000,knlbase:0x0,currwgid:0 --log= none 
+core   0: 0x00001000 (0x00000297) auipc   x5, 0x0
+core   0: 0x00001004 (0x02028593) addi    x11, x5, 32
+core   0: 0x00001008 (0xf1402573) csrr    x10, mhartid
+core   0: 0x0000100c (0x0182a283) lw      x5, 24(x5)
+core   0: 0x00001010 (0x00028067) jr      x5
+core   0: 0x80000000 (0x00003197) auipc   x3, 0x3
+core   0: 0x80000004 (0x80818193) addi    x3, x3, -2040
+core   0: 0x80000008 (0x02000e93) li      x29, 32
+core   0: 0x8000000c (0x0d0efed7) vsetvli x29, x29, e32, m1, ta, ma
+core   0: 0x80000010 (0x00002eb7) lui     x29, 0x2
+core   0: 0x80000014 (0x300eaef3) csrrs   x29, mstatus, x29
+core   0: 0x80000018 (0x00000e93) li      x29, 0
+core   0: 0x8000001c (0x80502373) csrr    x6, wid
+core   0: 0x80000020 (0x806023f3) csrr    x7, lds
+core   0: 0x80000024 (0x40000e13) li      x28, 1024
+core   0: 0x80000028 (0x03c30333) mul     x6, x6, x28
+core   0: 0x8000002c (0x00730133) add     x2, x6, x7
+core   0: 0x80000030 (0x00000213) li      x4, 0
+core   0: 0x80000034 (0x80102f73) csrr    x30, numw
+core   0: 0x80000038 (0x40000e13) li      x28, 1024
+core   0: 0x8000003c (0x03cf0f33) mul     x30, x30, x28
+core   0: 0x80000040 (0x01e38433) add     x8, x7, x30
+core   0: 0x80000044 (0x00002517) auipc   x10, 0x2
+core   0: 0x80000048 (0xfd050513) addi    x10, x10, -48
+core   0: 0x8000004c (0x00002617) auipc   x12, 0x2
+core   0: 0x80000050 (0xfc860613) addi    x12, x12, -56
+core   0: 0x80000054 (0x00c50863) beq     x10, x12, pc + 16
+core   0: 0x80000064 (0x803022f3) csrr    x5, knl
+core   0: 0x80000068 (0x0002a303) lw      x6, 0(x5)
+core   0: exception trap_load_access_fault, epc 0x80000068
+core   0:           tval 0x00000000
+std::terminate called, saving coverage...

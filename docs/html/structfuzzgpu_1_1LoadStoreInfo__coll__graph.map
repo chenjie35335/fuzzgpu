@@ -1,0 +1,7 @@
+<map id="fuzzgpu::LoadStoreInfo" name="fuzzgpu::LoadStoreInfo">
+<area shape="rect" id="Node000001" title="Summary of the latest load/store activity for one address." alt="" coords="106,93,277,119"/>
+<area shape="rect" id="Node000002" href="$structdifftest_1_1GlobalThreadId.html" title="Global thread identity as runtime warp ID plus lane ID." alt="" coords="5,5,180,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="118,38,179,91,176,95,115,42"/>
+<area shape="rect" id="Node000003" href="$classdifftest_1_1ScopeIdentifier.html" title="Identifies the memory scope associated with an access." alt="" coords="205,5,378,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="269,42,207,95,204,91,266,38"/>
+</map>

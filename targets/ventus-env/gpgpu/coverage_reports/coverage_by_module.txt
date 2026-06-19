@@ -1,0 +1,101 @@
+====================================================================================================
+MODULE-SPECIFIC COVERAGE ANALYSIS
+====================================================================================================
+
+
+ALU
+----------------------------------------------------------------------------------------------------
+  Files: 2
+  Total lines: 30
+  Covered: 28 (93.33%)
+  Uncovered: 2 (6.67%)
+  Worst coverage files:
+    - vALUv2.sv: 85.71% (2 uncovered)
+    - ALUexe.sv: 100.00% (0 uncovered)
+
+Arbiters
+----------------------------------------------------------------------------------------------------
+  Files: 19
+  Total lines: 1,845
+  Covered: 404 (21.90%)
+  Uncovered: 1,441 (78.10%)
+  Worst coverage files:
+    - RRArbiter_9.sv: 4.19% (937 uncovered)
+    - RRArbiter_11.sv: 9.92% (318 uncovered)
+    - RRArbiter_1.sv: 15.96% (79 uncovered)
+
+CSR
+----------------------------------------------------------------------------------------------------
+  Files: 2
+  Total lines: 155
+  Covered: 91 (58.71%)
+  Uncovered: 64 (41.29%)
+  Worst coverage files:
+    - CSRFile.sv: 56.00% (44 uncovered)
+    - CSRexe.sv: 63.64% (20 uncovered)
+
+Control Flow
+----------------------------------------------------------------------------------------------------
+  Files: 4
+  Total lines: 68
+  Covered: 56 (82.35%)
+  Uncovered: 12 (17.65%)
+  Worst coverage files:
+    - branch_join.sv: 70.00% (12 uncovered)
+    - Arbiter2_BranchCtrl.sv: 100.00% (0 uncovered)
+    - Branch_back.sv: 100.00% (0 uncovered)
+
+FPU
+----------------------------------------------------------------------------------------------------
+  Files: 16
+  Total lines: 278
+  Covered: 253 (91.01%)
+  Uncovered: 25 (8.99%)
+  Worst coverage files:
+    - FMA_1.sv: 0.00% (1 uncovered)
+    - FMUL_s3.sv: 25.00% (3 uncovered)
+    - FMUL_s2.sv: 33.33% (2 uncovered)
+
+Integer Arithmetic
+----------------------------------------------------------------------------------------------------
+  Files: 3
+  Total lines: 46
+  Covered: 42 (91.30%)
+  Uncovered: 4 (8.70%)
+  Worst coverage files:
+    - IntDivMod.sv: 88.89% (1 uncovered)
+    - ArrayMultiplier.sv: 90.62% (3 uncovered)
+    - NaiveMultiplier.sv: 100.00% (0 uncovered)
+
+Memory/Cache
+----------------------------------------------------------------------------------------------------
+  Files: 6
+  Total lines: 972
+  Covered: 567 (58.33%)
+  Uncovered: 405 (41.67%)
+  Worst coverage files:
+    - Arbiter2_DCacheCoreRsp_np.sv: 0.00% (66 uncovered)
+    - LSUexe.sv: 22.00% (78 uncovered)
+    - ReplacementUnit_ICache.sv: 57.14% (3 uncovered)
+
+Other
+----------------------------------------------------------------------------------------------------
+  Files: 167
+  Total lines: 14,363
+  Covered: 6,753 (47.02%)
+  Uncovered: 7,610 (52.98%)
+  Worst coverage files:
+    - DataCrossbar.sv: 0.00% (64 uncovered)
+    - FCMA_ADD_s1_32.sv: 0.00% (2 uncovered)
+    - ImmGen.sv: 0.00% (1 uncovered)
+
+Queue/FIFO
+----------------------------------------------------------------------------------------------------
+  Files: 41
+  Total lines: 617
+  Covered: 311 (50.41%)
+  Uncovered: 306 (49.59%)
+  Worst coverage files:
+    - Queue1_tagCheckerResult.sv: 0.00% (3 uncovered)
+    - Queue32_ShareMemCoreRsp.sv: 3.54% (109 uncovered)
+    - Queue1_Vec32_UInt32.sv: 4.17% (69 uncovered)

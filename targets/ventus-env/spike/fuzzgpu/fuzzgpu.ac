@@ -1,0 +1,7 @@
+dnl Minimal fuzzgpu subproject configure fragment
+
+# This file can be populated with autoconf checks required by the
+# fuzzgpu subproject. For now it is intentionally minimal so that
+# MCPPBS_SUBPROJECTS can include this subproject without errors.
+
+AC_MSG_NOTICE([configuring fuzzgpu subproject])

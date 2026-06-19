@@ -1,0 +1,101 @@
+# Copyright (C) 1995-2016, 2018, 2020, 2022 Free Software Foundation, Inc.
+#
+# This file is part of DejaGnu.
+#
+# DejaGnu is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# DejaGnu is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with DejaGnu; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
+
+# This file tests pass/fail/etc.
+# The way we do this is to recursively invoke ourselves on a small testsuite
+# and analyze the results.
+
+load_lib util-defs.exp
+
+runtest_setup_nested_testsuite
+
+set tests {
+    { stats 0 0 pass "expected passes\[ \t\]+1\n" }
+    { stats 0 0 fail "unexpected failures\[ \t\]+1\n" }
+    { stats 0 0 xpass "unexpected successes\[ \t\]+1\n" }
+    { stats 0 0 xfail "expected failures\[ \t\]+1\n" }
+    { stats 0 0 kpass "unknown successes\[ \t\]+1\n" }
+    { stats 0 0 kfail "known failures\[ \t\]+1\n" }
+    { stats 0 0 untested "untested testcases\[ \t\]+1\n" }
+    { stats 0 0 unresolved "unresolved testcases\[ \t\]+1\n" }
+    { stats 0 0 unsupported "unsupported tests\[ \t\]+1\n" }
+
+    { stats 1 0 pass "unresolved testcases\[ \t\]+1\n" }
+    { stats 1 0 fail "unresolved testcases\[ \t\]+1\n" }
+    { stats 1 0 xpass "unresolved testcases\[ \t\]+1\n" }
+    { stats 1 0 xfail "unresolved testcases\[ \t\]+1\n" }
+    { stats 1 0 kpass "unresolved testcases\[ \t\]+1\n" }
+    { stats 1 0 kfail "unresolved testcases\[ \t\]+1\n" }
+    { stats 1 0 untested "unresolved testcases\[ \t\]+1\n" }
+    { stats 1 0 unresolved "unresolved testcases\[ \t\]+1\n" }
+    { stats 1 0 unsupported "unresolved testcases\[ \t\]+1\n" }
+
+    { stats 0 4 pass "unresolved testcases\[ \t\]+1\n" }
+    { stats 0 4 fail "unresolved testcases\[ \t\]+1\n" }
+    { stats 0 4 xpass "unresolved testcases\[ \t\]+1\n" }
+    { stats 0 4 xfail "unresolved testcases\[ \t\]+1\n" }
+    { stats 0 4 kpass "unresolved testcases\[ \t\]+1\n" }
+    { stats 0 4 kfail "unresolved testcases\[ \t\]+1\n" }
+    { stats 0 4 untested "unresolved testcases\[ \t\]+1\n" }
+    { stats 0 4 unresolved "unresolved testcases\[ \t\]+1\n" }
+    { stats 0 4 unsupported "unresolved testcases\[ \t\]+1\n" }
+
+    { unit 0 0 pass "expected passes\[ \t\]+1\n" }
+    { unit 0 0 fail "unexpected failures\[ \t\]+1\n" }
+    { unit 0 0 xpass "unexpected successes\[ \t\]+1\n" }
+    { unit 0 0 xfail "expected failures\[ \t\]+1\n" }
+    { unit 0 0 untested "untested testcases\[ \t\]+1\n" }
+    { unit 0 0 unresolved "unresolved testcases\[ \t\]+1\n" }
+    { unit 0 0 unsupported "unsupported tests\[ \t\]+1\n" }
+
+    { unit 1 0 pass "unresolved testcases\[ \t\]+1\n" }
+    { unit 1 0 fail "unresolved testcases\[ \t\]+1\n" }
+    { unit 1 0 xpass "unresolved testcases\[ \t\]+1\n" }
+    { unit 1 0 xfail "unresolved testcases\[ \t\]+1\n" }
+    { unit 1 0 kpass "unresolved testcases\[ \t\]+1\n" }
+    { unit 1 0 kfail "unresolved testcases\[ \t\]+1\n" }
+    { unit 1 0 untested "unresolved testcases\[ \t\]+1\n" }
+    { unit 1 0 unresolved "unresolved testcases\[ \t\]+1\n" }
+    { unit 1 0 unsupported "unresolved testcases\[ \t\]+1\n" }
+
+    { unit 0 4 pass "unresolved testcases\[ \t\]+1\n" }
+    { unit 0 4 fail "unresolved testcases\[ \t\]+1\n" }
+    { unit 0 4 xpass "unresolved testcases\[ \t\]+1\n" }
+    { unit 0 4 xfail "unresolved testcases\[ \t\]+1\n" }
+    { unit 0 4 kpass "unresolved testcases\[ \t\]+1\n" }
+    { unit 0 4 kfail "unresolved testcases\[ \t\]+1\n" }
+    { unit 0 4 untested "unresolved testcases\[ \t\]+1\n" }
+    { unit 0 4 unresolved "unresolved testcases\[ \t\]+1\n" }
+    { unit 0 4 unsupported "unresolved testcases\[ \t\]+1\n" }
+}
+
+foreach t $tests {
+    if { [util_test $RUNTEST \
+	    "--local_init nested-init.exp --tool stat\
+		ERROR_COUNT=[lindex $t 1] WARNING_COUNT=[lindex $t 2]\
+		STATS_TEST=[lindex $t 3] [lindex $t 0]-sub.exp" \
+	    "" \
+	    [lindex $t 2]] } {
+	fail [join [lrange $t 0 3] /]
+	runtest_copy_nested_testsuite_log stat
+    } else {
+	pass [join [lrange $t 0 3] /]
+    }
+}
+
+runtest_cleanup_nested_testsuite

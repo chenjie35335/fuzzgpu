@@ -1,0 +1,5 @@
+<map id="fuzzgpu::RegDepTracker::DFGEdge" name="fuzzgpu::RegDepTracker::DFGEdge">
+<area shape="rect" id="Node000001" title="Edge from a writer to a consumer operand. Producer PC to outgoing dependency edges." alt="" coords="5,108,184,148"/>
+<area shape="rect" id="Node000002" href="$df/dd0/structfuzzgpu_1_1RegDepTracker_1_1DFGNode.html" title="Node in the per&#45;warp data&#45;flow graph." alt="" coords="5,5,184,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="97,59,97,108,92,108,92,59"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="fuzzgpu::LoadStoreOperandHistory" name="fuzzgpu::LoadStoreOperandHistory">
+<area shape="rect" id="Node000001" title="Captured load/store operands and derived address hash." alt="" coords="5,123,207,163"/>
+<area shape="rect" id="Node000002" href="$d0/dd7/structfuzzgpu_1_1VGPRValues.html" title="Per&#45;thread values captured for load/store operand matching." alt="" coords="26,5,186,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,44,109,122,103,122,103,44"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="fuzzgpu::GenWarp::BasicBlockSnapshot" name="fuzzgpu::GenWarp::BasicBlockSnapshot">
+<area shape="rect" id="Node000001" title="Snapshot of basic&#45;block emission progress." alt="" coords="5,93,224,133"/>
+<area shape="rect" id="Node000002" href="$structfuzzgpu_1_1MemoryBlock.html" title="Closed address interval allocated from a code or data range." alt="" coords="29,5,200,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,44,117,93,112,93,112,44"/>
+</map>

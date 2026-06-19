@@ -1,0 +1,10 @@
+logs/
+build*/
+verilog-out*/
+.cache/
+install/
+*.json
+*.fir
+*.v
+*.fst
+rtl_parameters.cpp

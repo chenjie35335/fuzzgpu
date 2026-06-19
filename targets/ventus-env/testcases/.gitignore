@@ -1,0 +1,13 @@
+.vscode/
+# *.data
+# *.metadata
+*.riscv
+*.vmem
+*.log
+*.vcd
+*.data
+*.metadata
+*.out
+object*.cl
+object*.dump
+.idea/*

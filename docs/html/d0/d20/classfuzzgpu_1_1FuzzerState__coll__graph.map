@@ -1,0 +1,21 @@
+<map id="fuzzgpu::FuzzerState" name="fuzzgpu::FuzzerState">
+<area shape="rect" id="Node000001" title="Fuzzer state shared across the fuzzer components." alt="" coords="741,182,899,207"/>
+<area shape="rect" id="Node000002" href="$de/d1c/classfuzzgpu_1_1BitsSampler.html" title="Caches uniform integer samplers for fixed bit widths." alt="" coords="349,9,509,34"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="523,13,570,16,621,23,671,36,719,58,754,86,782,120,802,154,816,181,811,183,798,157,777,123,750,89,716,62,670,41,620,28,570,21,522,19"/>
+<area shape="rect" id="Node000003" href="$d7/dd0/classfuzzgpu_1_1RandomMemoryAllocator.html" title="Random non&#45;overlapping allocator for generated code/data memory." alt="" coords="305,58,552,83"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="566,75,643,89,718,114,745,128,770,146,808,180,805,184,767,150,743,133,716,118,642,94,565,81"/>
+<area shape="rect" id="Node000004" href="$dd/d9f/classdifftest_1_1ISAEmulator.html" title="Opaque wrapper around the target ISA emulator implementation." alt="" coords="350,107,507,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="521,126,617,138,718,157,788,179,786,185,717,163,616,143,521,131"/>
+<area shape="rect" id="Node000005" href="$db/d9b/classdifftest_1_1ProgramOrder.html" title="Per&#45;thread program order of load/store events." alt="" coords="345,157,512,182"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="526,173,741,187,741,192,526,178"/>
+<area shape="rect" id="Node000006" href="$da/d98/structdifftest_1_1StoreTrace.html" title="Byte&#45;level store trace indexed by LoadStoreId." alt="" coords="357,206,501,231"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="514,218,612,217,717,211,759,205,759,210,718,216,612,222,514,223"/>
+<area shape="rect" id="Node000007" href="$de/d18/classfuzzgpu_1_1LoadStoreOperandHistoryIndex.html" title="Indexed sliding window of load/store operand histories." alt="" coords="328,256,529,296"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="543,268,629,257,717,239,759,223,795,205,797,210,761,228,718,244,630,263,544,273"/>
+<area shape="rect" id="Node000008" href="$db/db2/classfuzzgpu_1_1InstrPool.html" title="Arena allocator for generated RISC&#45;V instruction objects." alt="" coords="359,321,498,346"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="512,330,612,318,666,305,716,286,745,268,770,246,807,206,811,209,774,250,748,272,719,290,667,310,613,324,512,336"/>
+<area shape="rect" id="Node000009" href="$d4/dc7/classfuzzgpu_1_1InstrPool_1_1Chunk.html" title="Fixed&#45;size allocation chunk inside the instruction arena. Chunk currently receiving new instructions." alt="" coords="5,313,144,353"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="158,331,359,331,359,336,158,336"/>
+<area shape="rect" id="Node000010" href="$d7/df8/structfuzzgpu_1_1FuzzerState_1_1Stat.html" title="Aggregated generation statistics." alt="" coords="350,371,507,411"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="521,392,569,389,620,382,670,367,716,344,752,313,780,274,800,236,812,206,817,209,804,238,784,277,756,316,719,349,672,372,621,387,570,395,522,398"/>
+</map>

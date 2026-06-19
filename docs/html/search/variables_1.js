@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['accepted_5fcsr_5fgenerations_0',['accepted_csr_generations',['../d7/df8/structfuzzgpu_1_1FuzzerState_1_1Stat.html#add208aa34db815d343381c607a860bd1',1,'fuzzgpu::FuzzerState::Stat']]],
+  ['accepted_5fload_5fstore_5fgenerations_1',['accepted_load_store_generations',['../d7/df8/structfuzzgpu_1_1FuzzerState_1_1Stat.html#a7e7129a4e94584f35e68f368114ea388',1,'fuzzgpu::FuzzerState::Stat']]],
+  ['accepted_5fpred_5fgenerations_2',['accepted_pred_generations',['../d7/df8/structfuzzgpu_1_1FuzzerState_1_1Stat.html#ab2ff91a92a5a780987ac2942b9074ca0',1,'fuzzgpu::FuzzerState::Stat']]],
+  ['accepted_5fthread_5fdivergence_5fpreference_3',['accepted_thread_divergence_preference',['../d7/df8/structfuzzgpu_1_1FuzzerState_1_1Stat.html#ac41cfab62fb74f53f119360fa71f261b',1,'fuzzgpu::FuzzerState::Stat']]],
+  ['addr_4',['addr',['../df/d21/classdifftest_1_1MemTrace.html#a06dd33dde9cf99b352fb31ead283176f',1,'difftest::MemTrace']]],
+  ['addr_5fdep_5fcache_5f_5',['addr_dep_cache_',['../d9/dd8/classfuzzgpu_1_1RegDepTracker.html#adb132c111326527fc3251388cc38e6e4',1,'fuzzgpu::RegDepTracker']]],
+  ['addr_5fhash_6',['addr_hash',['../dd/dcf/structfuzzgpu_1_1LoadStoreOperandHistory.html#aaa440e9a11c056ff95ce889b43521f34',1,'fuzzgpu::LoadStoreOperandHistory']]],
+  ['alloc_5fbarrier_5fid_5f_7',['alloc_barrier_id_',['../db/daa/classfuzzgpu_1_1Generator.html#af84ba0d4f31b1acf1e92cef3a90d9908',1,'fuzzgpu::Generator']]],
+  ['allocated_5f_8',['allocated_',['../d4/dc7/classfuzzgpu_1_1InstrPool_1_1Chunk.html#a294fd093a12e3d26acde39dfb6bf0e65',1,'fuzzgpu::InstrPool::Chunk']]],
+  ['allocated_5fblocks_5f_9',['allocated_blocks_',['../d7/dd0/classfuzzgpu_1_1RandomMemoryAllocator.html#a451599c1a75023569d6a823d50aa474e',1,'fuzzgpu::RandomMemoryAllocator']]],
+  ['applied_5ftmask_10',['applied_tmask',['../d1/da0/structfuzzgpu_1_1TraceFragmentHeader.html#abd04c0ab439d11aa706bd16e84ab2245',1,'fuzzgpu::TraceFragmentHeader::applied_tmask'],['../dc/dac/classdifftest_1_1Trace.html#a6ca1e5229a6b75f90e92e91898137323',1,'difftest::Trace::applied_tmask']]],
+  ['aq_11',['aq',['../d8/d85/structdifftest_1_1LoadStoreOpcode.html#ae4d532b52158913747086344d0301b8e',1,'difftest::LoadStoreOpcode']]],
+  ['aq_5f_12',['aq_',['../d5/d48/classfuzzgpu_1_1riscv__instr.html#aaadf0db2d4760a94d9ca61e9ddf55a27',1,'fuzzgpu::riscv_instr']]],
+  ['aq_5frl_5fdist_13',['aq_rl_dist',['../d8/d5c/classfuzzgpu_1_1FuzzerState.html#a7b98df57446bcf36b016d171ff962b7a',1,'fuzzgpu::FuzzerState']]],
+  ['arch_14',['arch',['../d0/db3/classfuzzgpu_1_1Config.html#a5a6682532e2c683b915bfabfb7f625fd',1,'fuzzgpu::Config']]],
+  ['assigned_5foperands_5f_15',['assigned_operands_',['../d5/d48/classfuzzgpu_1_1riscv__instr.html#a5848b947ae0f96fad13ec9f5ad95d0bf',1,'fuzzgpu::riscv_instr']]]
+];

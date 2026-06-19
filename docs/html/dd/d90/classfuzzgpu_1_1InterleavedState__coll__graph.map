@@ -1,0 +1,10 @@
+<map id="fuzzgpu::InterleavedState" name="fuzzgpu::InterleavedState">
+<area shape="rect" id="Node000001" title="Per&#45;warp state kept while generator interleaves multiple warps." alt="" coords="233,196,423,221"/>
+<area shape="rect" id="Node000002" href="$d0/dbb/structfuzzgpu_1_1MemoryBlock.html" title="Closed address interval allocated from a code or data range." alt="" coords="5,5,176,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,44,73,88,74,111,83,132,110,151,154,168,259,193,258,199,153,173,108,156,79,135,69,112,67,88,78,43"/>
+<area shape="rect" id="Node000003" href="$d4/de2/structfuzzgpu_1_1GenWarp_1_1BasicBlockSnapshot.html" title="Snapshot of basic&#45;block emission progress." alt="" coords="219,93,437,133"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="133,33,281,91,279,96,131,38"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="331,147,331,196,325,196,325,147"/>
+<area shape="rect" id="Node000004" href="$d5/d48/classfuzzgpu_1_1riscv__instr.html" title="Concrete RISC&#45;V instruction with assigned operands." alt="" coords="462,101,610,126"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="514,137,488,157,457,174,422,188,387,198,386,193,420,183,455,170,485,152,511,133"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="difftest::Trace::RegWriteback" name="difftest::Trace::RegWriteback">
+<area shape="rect" id="Node000001" title="Register writeback payload for one destination register. Register writebacks produced by this instruc..." alt="" coords="5,93,215,119"/>
+<area shape="rect" id="Node000002" href="$d5/de2/structdifftest_1_1RegId.html" title="Register identifier used by traces and emulator register access." alt="" coords="53,5,167,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,45,113,93,107,93,107,45"/>
+</map>

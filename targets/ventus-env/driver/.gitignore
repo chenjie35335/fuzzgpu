@@ -1,0 +1,14 @@
+/verilator/
+.idea/*
+.vscode/*
+main.exe
+a.exe
+test.cpp
+test.out
+test
+html/
+cmake-build*
+build
+obj_dir*
+compile_commands.json
+.cache

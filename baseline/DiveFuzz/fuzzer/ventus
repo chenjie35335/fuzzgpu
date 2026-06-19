@@ -1,0 +1,213 @@
+.globl _start
+.section .text
+_start:
+init:
+  vsetvli t0, x0, e32, m1, ta, ma
+  li x0, 0x00000000ab6bd9fe
+  regext x0, x0, 1
+  mv x0, x0
+  li x1, 0x0000000090afe5bb
+  regext x0, x0, 1
+  mv x1, x1
+  li x2, 0x000000004acdfba0
+  regext x0, x0, 1
+  mv x2, x2
+  li x3, 0x000000008857757c
+  regext x0, x0, 1
+  mv x3, x3
+  li x4, 0x00000000db5ef10f
+  regext x0, x0, 1
+  mv x4, x4
+  li x5, 0x000000008d592900
+  regext x0, x0, 1
+  mv x5, x5
+  li x6, 0x000000006fb0b9a2
+  regext x0, x0, 1
+  mv x6, x6
+  li x7, 0x000000008379d6e1
+  regext x0, x0, 1
+  mv x7, x7
+  li x8, 0x00000000c90418a3
+  regext x0, x0, 1
+  mv x8, x8
+  li x9, 0x0000000072854a8a
+  regext x0, x0, 1
+  mv x9, x9
+  li x10, 0x0000000020ab633c
+  regext x0, x0, 1
+  mv x10, x10
+  li x11, 0x00000000352da73d
+  regext x0, x0, 1
+  mv x11, x11
+  li x12, 0x00000000b4366ae5
+  regext x0, x0, 1
+  mv x12, x12
+  li x13, 0x00000000c6fabfe1
+  regext x0, x0, 1
+  mv x13, x13
+  li x14, 0x0000000045a9ad58
+  regext x0, x0, 1
+  mv x14, x14
+  li x15, 0x000000005be139e5
+  regext x0, x0, 1
+  mv x15, x15
+  li x16, 0x0000000070b2dd29
+  regext x0, x0, 1
+  mv x16, x16
+  li x17, 0x00000000472a3aae
+  regext x0, x0, 1
+  mv x17, x17
+  li x18, 0x000000007f3e4e02
+  regext x0, x0, 1
+  mv x18, x18
+  li x19, 0x0000000051d9757d
+  regext x0, x0, 1
+  mv x19, x19
+  li x20, 0x00000000beb6da6a
+  regext x0, x0, 1
+  mv x20, x20
+  li x21, 0x000000003d6c5d32
+  regext x0, x0, 1
+  mv x21, x21
+  li x22, 0x000000009d613b2b
+  regext x0, x0, 1
+  mv x22, x22
+  li x23, 0x00000000a0ba285e
+  regext x0, x0, 1
+  mv x23, x23
+  li x24, 0x00000000c6e8cc69
+  regext x0, x0, 1
+  mv x24, x24
+  li x25, 0x00000000aac00e18
+  regext x0, x0, 1
+  mv x25, x25
+  li x26, 0x000000000c2043b6
+  regext x0, x0, 1
+  mv x26, x26
+  li x27, 0x000000002758c19f
+  regext x0, x0, 1
+  mv x27, x27
+  li x28, 0x00000000d3ccb35c
+  regext x0, x0, 1
+  mv x28, x28
+  li x29, 0x00000000dea31fdd
+  regext x0, x0, 1
+  mv x29, x29
+  li x30, 0x000000003ec7433f
+  regext x0, x0, 1
+  mv x30, x30
+  li x31, 0x00000000e47f3847
+  regext x0, x0, 1
+  mv x31, x31
+  vid.v v0
+  vid.v v1
+  vid.v v2
+  vid.v v3
+  vid.v v4
+  vid.v v5
+  vid.v v6
+  vid.v v7
+  vid.v v8
+  vid.v v9
+  vid.v v10
+  vid.v v11
+  vid.v v12
+  vid.v v13
+  vid.v v14
+  vid.v v15
+  vid.v v16
+  vid.v v17
+  vid.v v18
+  vid.v v19
+  vid.v v20
+  vid.v v21
+  vid.v v22
+  vid.v v23
+  vid.v v24
+  vid.v v25
+  vid.v v26
+  vid.v v27
+  vid.v v28
+  vid.v v29
+  vid.v v30
+  vid.v v31
+  la t6, mem_region
+  j main
+.align 12
+.align 2
+.option norvc
+main:
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+.option rvc
+write_tohost:
+  endprg x0,x0,x0
+_exit:
+  j write_tohost
+instr_end:
+  nop
+.section .data
+.align 6
+.global tohost
+tohost:
+.word 0x0, 0x0
+.align 6
+.global fromhost
+fromhost:
+.word 0x0, 0x0
+.section .region_0, "aw", @progbits
+region_0:
+.word 0x7ffbea20, 0xa3518a1e, 0x6df26f1f, 0xb9849727, 0x5928e3cc, 0x00cb8244, 0x6392f09b, 0xd12b7793
+.section .mem_region, "aw", @progbits
+.align 4
+mem_region:
+.space 8192
+mem_region_end:

@@ -1,0 +1,32 @@
+build*/
+!targets/vortex/third_party/softfloat/build/
+!targets/vortex/third_party/softfloat/build/**
+results/
+/trace/
+/tests/
+.vscode/
+.cache
+.codex_tmp/
+.metals/
+/misc/
+.scala-build/
+scala-build/
+/artifact/
+__pycache__/
+*.log
+/thirdparty/json.tar.xz
+
+# Generated bug repro artifacts
+/bugs/
+/bugs/**/*.fst
+/bugs/**/*.gtkw
+/bugs/**/testcase_*/
+
+# Generated target build outputs
+/targets/test-chisel-cov/
+/targets/test-chisel-cov2/
+/targets/vortex-2.2/
+
+# Local repository sync helpers
+/sync_fuzzgpu_repo.sh
+/scripts/sync_fuzzgpu_repo_flat.py

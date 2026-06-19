@@ -1,0 +1,8 @@
+<map id="fuzzgpu::Config" name="fuzzgpu::Config">
+<area shape="rect" id="Node000001" title="Global generation configuration singleton." alt="" coords="19,168,142,193"/>
+<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="157,172,169,181,160,188,142,191,142,186,158,184,163,181,154,177"/>
+<area shape="rect" id="Node000002" href="$d1/d84/classfuzzgpu_1_1ArchConfig.html" title="Architecture description extended with fuzzgpu memory size." alt="" coords="5,80,156,105"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="83,119,83,167,78,167,78,119"/>
+<area shape="rect" id="Node000003" href="$d6/d27/classdifftest_1_1Arch.html" title="Static target architecture description." alt="" coords="28,5,133,31"/>
+<area shape="poly" id="edge3_Node000002_Node000003" title=" " alt="" coords="83,45,83,80,78,80,78,45"/>
+</map>

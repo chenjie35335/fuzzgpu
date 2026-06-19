@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['offset_0',['offset',['../de/da0/classfuzzgpu_1_1Scratchpad_1_1MemoryFragment.html#adf65f6f3a50334232be5d25ebabcc85a',1,'fuzzgpu::Scratchpad::MemoryFragment']]],
+  ['old_5futmask_5f_1',['old_utmask_',['../d1/d47/classfuzzgpu_1_1GenWarp_1_1PropertyProxy.html#a01c90f7a6abf109c55e27c41980f9b90',1,'fuzzgpu::GenWarp::PropertyProxy']]],
+  ['op1_5fhash_2',['op1_hash',['../dd/dcf/structfuzzgpu_1_1LoadStoreOperandHistory.html#a2b7621829b5ba14399209dcab6bf2b30',1,'fuzzgpu::LoadStoreOperandHistory::op1_hash'],['../d9/dbc/structfuzzgpu_1_1LoadStoreOperandKey.html#a27486348a7c2b8f5822ac505c9946ecf',1,'fuzzgpu::LoadStoreOperandKey::op1_hash']]],
+  ['op1_5fid_3',['op1_id',['../dd/dcf/structfuzzgpu_1_1LoadStoreOperandHistory.html#aa44652c3018be136f59f179529c7afb1',1,'fuzzgpu::LoadStoreOperandHistory']]],
+  ['op1_5fvalues_4',['op1_values',['../dd/dcf/structfuzzgpu_1_1LoadStoreOperandHistory.html#ad6e37de8b92ccfd4c1130d6b547b3955',1,'fuzzgpu::LoadStoreOperandHistory']]],
+  ['op2_5fid_5',['op2_id',['../dd/dcf/structfuzzgpu_1_1LoadStoreOperandHistory.html#a8f7c31023cd2201549aa4f34eaef6209',1,'fuzzgpu::LoadStoreOperandHistory']]],
+  ['op2_5fvalues_6',['op2_values',['../dd/dcf/structfuzzgpu_1_1LoadStoreOperandHistory.html#a9b53c17bce04aee3fc271e42da8767c8',1,'fuzzgpu::LoadStoreOperandHistory']]],
+  ['opaque_5f_7',['opaque_',['../dd/d9f/classdifftest_1_1ISAEmulator.html#a0097528868cc3b8aa135904ab603ba1c',1,'difftest::ISAEmulator']]],
+  ['opcode_8',['opcode',['../dc/dac/classdifftest_1_1Trace.html#acc8f79badfff48aaa09bb013a6367be1',1,'difftest::Trace::opcode'],['../d8/d85/structdifftest_1_1LoadStoreOpcode.html#acb4cc8d3bf8fea2c1cbbcb32840e0221',1,'difftest::LoadStoreOpcode::opcode'],['../df/dd0/structfuzzgpu_1_1RegDepTracker_1_1DFGNode.html#a28924db25ec6047b4080f04b4d2ae84f',1,'fuzzgpu::RegDepTracker::DFGNode::opcode'],['../d1/da0/structfuzzgpu_1_1TraceFragmentHeader.html#a3d50fa47151e910473b3ba63f3a820f1',1,'fuzzgpu::TraceFragmentHeader::opcode']]],
+  ['opcode_5fcustom0_9',['OPCODE_custom0',['../d8/d13/namespacedifftest_1_1riscv.html#ae2e78db6b5f8231a030dd24cc6e4707a',1,'difftest::riscv']]],
+  ['opcode_5ffp_10',['OPCODE_FP',['../d8/d13/namespacedifftest_1_1riscv.html#a314476c423df75571b9850c4ab9b56d2',1,'difftest::riscv']]],
+  ['opcode_5fv_11',['OPCODE_V',['../d8/d13/namespacedifftest_1_1riscv.html#a7b03d84214670ca6c64deca226aabf33',1,'difftest::riscv']]],
+  ['operand_5fmask_12',['operand_mask',['../d3/df5/classfuzzgpu_1_1riscv__meta.html#aa14876aa38bb6dd0360b828c1943937d',1,'fuzzgpu::riscv_meta::operand_mask'],['../dd/dcf/structfuzzgpu_1_1LoadStoreOperandHistory.html#ade324c12c654b4c8951a62e15cd05a54',1,'fuzzgpu::LoadStoreOperandHistory::operand_mask']]],
+  ['orig_5fbb_5fsnapshot_13',['orig_bb_snapshot',['../df/d33/classfuzzgpu_1_1GenWarp_1_1SIMTState.html#af2ac2608e702c7fbc578e62f2f6fe105',1,'fuzzgpu::GenWarp::SIMTState']]],
+  ['orig_5fnext_5fbb_5fmem_5fblk_14',['orig_next_bb_mem_blk',['../df/d33/classfuzzgpu_1_1GenWarp_1_1SIMTState.html#a428dc7c42328e0aa41bcf92c6baf3bff',1,'fuzzgpu::GenWarp::SIMTState']]],
+  ['orig_5fnext_5fbb_5fsnapshot_15',['orig_next_bb_snapshot',['../df/d33/classfuzzgpu_1_1GenWarp_1_1SIMTState.html#a6d2128bae4532c32f93a305ad7010e7d',1,'fuzzgpu::GenWarp::SIMTState']]],
+  ['orig_5ftmask_16',['orig_tmask',['../df/d33/classfuzzgpu_1_1GenWarp_1_1SIMTState.html#aad687af339cc7e16b6939444b085eca2',1,'fuzzgpu::GenWarp::SIMTState']]],
+  ['overwritten_5fpc_17',['overwritten_pc',['../d9/de5/classfuzzgpu_1_1GenWarp.html#a1384fcb6292223422b7bc030f03505d5',1,'fuzzgpu::GenWarp']]]
+];

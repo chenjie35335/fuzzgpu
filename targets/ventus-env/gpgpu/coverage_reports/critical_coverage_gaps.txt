@@ -1,0 +1,184 @@
+====================================================================================================
+CRITICAL COVERAGE GAPS - FUNCTIONAL ANALYSIS
+====================================================================================================
+
+This report identifies untested features that are critical for correctness.
+Focus on these areas to maximize testing effectiveness.
+
+====================================================================================================
+1. [HIGH] LSU/Memory: Atomic Operations (AMO)
+====================================================================================================
+Reason: No coverage for RISC-V A-extension atomic instructions
+Files Affected: 19
+
+Key Files:
+  - AddrCalculate.sv
+  - SlowDown.sv
+  - instDemux.sv
+  - DualIssueIO.sv
+  - Queue1_vExeData.sv
+  ... and 14 more
+
+Example Uncovered Lines:
+  AddrCalculate.sv:245: %000000                 io_from_fifo_bits_ctrl_atomic,	// ventus/src/pipeline/LS
+  AddrCalculate.sv:757: %000000   reg               reg_save_ctrl_atomic;	// ventus/src/pipeline/LSU.sca
+  SlowDown.sv:137: %000000                 io_in_bits_control_0_atomic,	// ventus/src/pipeline/ibuf
+  SlowDown.sv:183: %000000                 io_in_bits_control_1_atomic,	// ventus/src/pipeline/ibuf
+  instDemux.sv:136: %000000                 io_in_0_bits_atomic,	// ventus/src/pipeline/operandColle
+
+====================================================================================================
+2. [HIGH] Integer Arithmetic: Overflow Handling
+====================================================================================================
+Reason: Edge cases like INT_MIN/-1 not tested
+Files Affected: 1
+
+Key Files:
+  - IntDivMod.sv
+
+Example Uncovered Lines:
+  IntDivMod.sv:109: %000000   reg         overflowReg;	// ventus/src/pipeline/IntDivMod.scala:41:30
+
+====================================================================================================
+3. [HIGH] FPU: Floating-Point Rounding Modes
+====================================================================================================
+Reason: IEEE 754 rounding modes not exercised
+Files Affected: 45
+
+Key Files:
+  - vTCexe.sv
+  - TCAddPipe.sv
+  - RoundingUnit_256.sv
+  - instDemux.sv
+  - IntToFP_1.sv
+  ... and 40 more
+
+Example Uncovered Lines:
+  vTCexe.sv:181: %000000   input  [2:0]  io_rm,	// ventus/src/pipeline/execution.scala:116:14
+  TCAddPipe.sv:96: %000000   input  [2:0]  io_in_bits_rm,	// dependencies/fpuv2/src/main/scala/util
+  TCAddPipe.sv:97: %000000                 io_in_bits_ctrl_rm,	// dependencies/fpuv2/src/main/scala
+  RoundingUnit_256.sv:90: %000000   input  [2:0]  io_in_rm,	// ventus/src/pipeline/fpu_utils.scala:107:14
+
+====================================================================================================
+4. [MEDIUM] Shared Memory: Bank Conflict Resolution
+====================================================================================================
+Reason: Shared memory bank conflicts not tested
+Files Affected: 22
+
+Key Files:
+  - allocator.sv
+  - AddrCalculate.sv
+  - cu_interface.sv
+  - CTA2warp.sv
+  - CTAinterface.sv
+  ... and 17 more
+
+Example Uncovered Lines:
+  allocator.sv:164: %000000   reg  [17:0] rtcache_lds_0_size_1;	// ventus/src/cta/allocator.scala:13
+  allocator.sv:166: %000000   reg  [17:0] rtcache_lds_1_size_1;	// ventus/src/cta/allocator.scala:13
+  AddrCalculate.sv:472: %000000   output        io_to_shared_valid,	// ventus/src/pipeline/LSU.scala:115
+  AddrCalculate.sv:1602: %000000   wire              io_to_shared_valid_0 = state == 3'h2;	// ventus/src/
+  cu_interface.sv:120: %000000   input  [16:0] io_rt_wg_new_bits_lds_base,	// ventus/src/cta/cu_interfa
+
+====================================================================================================
+5. [MEDIUM] Control Flow: SIMT Stack Operations
+====================================================================================================
+Reason: Complex divergence scenarios not fully tested
+Files Affected: 9
+
+Key Files:
+  - instDemux.sv
+  - DualIssueIO.sv
+  - InstrBufferV2.sv
+  - ibuffer2issue.sv
+  - branch_join.sv
+  ... and 4 more
+
+Example Uncovered Lines:
+  instDemux.sv:145: %000000   input         io_in_1_bits_simt_stack,	// ventus/src/pipeline/operandC
+  DualIssueIO.sv:579: %000000   input         io_in_2_bits_control_simt_stack,	// ventus/src/pipeline/
+  DualIssueIO.sv:755: %000000   input  [1:0]  io_in_3_bits_control_branch,	// ventus/src/pipeline/oper
+  InstrBufferV2.sv:299: %000000   output [1:0]  io_out_2_bits_branch,	// ventus/src/pipeline/ibuffer.sca
+  InstrBufferV2.sv:300: %000000   output        io_out_2_bits_simt_stack,	// ventus/src/pipeline/ibuffer
+
+====================================================================================================
+6. [MEDIUM] L2 Cache: Directory & Coherence
+====================================================================================================
+Reason: Cache coherence protocol not fully exercised
+Files Affected: 3
+
+Key Files:
+  - L1TagAccess.sv
+  - SourceD.sv
+  - Directory_test.sv
+
+Example Uncovered Lines:
+  L1TagAccess.sv:763: %000000   reg          way_dirty_0_1;	// ventus/src/L1Cache/L1TagAccess.scala:10
+  L1TagAccess.sv:764: %000000   reg          way_dirty_1_0;	// ventus/src/L1Cache/L1TagAccess.scala:10
+  SourceD.sv:98: %000000   input  [6:0]    io_req_bits_offset,	// ventus/src/L2cache/SourceD.scal
+  SourceD.sv:102: %000000   input  [2:0]    io_req_bits_param,	// ventus/src/L2cache/SourceD.scala
+  Directory_test.sv:102: %000000   input  [6:0]    io_read_bits_offset,	// ventus/src/L2cache/Directory_t
+
+====================================================================================================
+TESTING RECOMMENDATIONS
+====================================================================================================
+
+1. Atomic Operations
+--------------------------------------------------------------------------------
+- Test LR/SC (Load-Reserved/Store-Conditional) sequences
+- Test AMOSWAP, AMOADD, AMOAND, AMOOR, AMOXOR
+- Test AMOMIN, AMOMAX, AMOMINU, AMOMAXU
+- Test concurrent atomic operations from multiple threads
+- Test atomic operations on shared memory
+
+2. Integer Division Edge Cases
+--------------------------------------------------------------------------------
+- Test INT_MIN / -1 (overflow case)
+- Test division by zero with both signed and unsigned
+- Test REMU with zero divisor
+- Test small divisor followed by overflow
+
+3. Floating-Point Rounding
+--------------------------------------------------------------------------------
+- Set FCSR/FRM to different rounding modes (RNE, RTZ, RDN, RUP, RMM)
+- Test each mode with FP division and square root
+- Test per-instruction rounding mode overrides
+- Verify correct rounding on edge cases (ties, exact halfway)
+
+4. Shared Memory Access Patterns
+--------------------------------------------------------------------------------
+- Test bank conflicts (multiple threads accessing same bank)
+- Test broadcast reads (all threads read same address)
+- Test strided access patterns
+- Test random access patterns
+- Test bank conflict resolution correctness
+
+5. Control Flow Divergence
+--------------------------------------------------------------------------------
+- Test deep branch nesting (exceed stack depth)
+- Test all threads diverge vs all converge
+- Test unbalanced branches (1 thread vs 31 threads)
+- Test multiple warps with simultaneous divergence
+- Test reconvergence at different levels
+
+6. Cache Coherence
+--------------------------------------------------------------------------------
+- Test write-back scenarios
+- Test cache line invalidation
+- Test multi-core cache coherence
+- Test atomic operations with cache
+
+====================================================================================================
+PRIORITY SUMMARY
+====================================================================================================
+
+HIGH Priority Issues: 3
+MEDIUM Priority Issues: 3
+LOW Priority Issues: 0
+
+Recommended Testing Order:
+1. Atomic operations (correctness-critical)
+2. Integer overflow handling (safety-critical)
+3. FP rounding modes (IEEE 754 compliance)
+4. Shared memory bank conflicts (performance-critical)
+5. Control flow edge cases (completeness)
+6. Cache coherence (multi-core scenarios)

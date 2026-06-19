@@ -1,0 +1,8 @@
+<map id="fuzzgpu::GenWarp::SIMTState" name="fuzzgpu::GenWarp::SIMTState">
+<area shape="rect" id="Node000001" title="Saved SIMT divergence state for one split path." alt="" coords="5,211,220,236"/>
+<area shape="rect" id="Node000002" href="$d0/dbb/structfuzzgpu_1_1MemoryBlock.html" title="Closed address interval allocated from a code or data range." alt="" coords="27,5,198,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,44,106,93,107,160,113,210,108,211,102,160,101,93,106,44"/>
+<area shape="rect" id="Node000003" href="$d4/de2/structfuzzgpu_1_1GenWarp_1_1BasicBlockSnapshot.html" title="Snapshot of basic&#45;block emission progress." alt="" coords="269,93,487,133"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="159,33,325,91,324,96,157,38"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="320,141,142,213,140,208,318,136"/>
+</map>

@@ -1,0 +1,145 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  workflow_dispatch:
+
+name: Create Release
+
+env:
+  # Could, potentially automatically parse
+  # the bin name, but let's do it manually for now.
+  RELEASE_BIN: morty
+
+  # Space separated paths to include in the archive.
+  # Start relative paths with a dot if you don't want
+  # paths to be preserved. Use "/" as a delimiter.
+  RELEASE_ADDS: README.md LICENSE
+
+
+jobs:
+  build:
+    name: Build release
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build: [macos, windows]
+        include:
+          - build: macos
+            os: macos-latest
+            rust: stable
+          - build: windows
+            os: windows-latest
+            rust: stable
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Install Rust (rustup)
+      run: rustup update ${{ matrix.rust }} --no-self-update && rustup default ${{ matrix.rust }}
+      if: matrix.os != 'macos-latest'
+      shell: bash
+
+    - name: Install Rust (macos)
+      # As of 7.12.2019 rust is not installed on MacOS
+      # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/software-installed-on-github-hosted-runners#macos-1015
+      run: |
+        curl https://sh.rustup.rs | sh -s -- -y
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      if: matrix.os == 'macos-latest'
+
+    - name: Build
+      run: cargo build --verbose --release
+
+    - name: Create artifact directory
+      run: mkdir artifacts
+
+    - name: Create archive for Windows
+      run: 7z a -tzip ./artifacts/${{ env.RELEASE_BIN }}-windows-x86_64.zip ./target/release/${{ env.RELEASE_BIN }}.exe ${{ env.RELEASE_ADDS }}
+      if: matrix.os == 'windows-latest'
+
+    - name: Install p7zip
+      # 7Zip not available on MacOS, install p7zip via homebrew.
+      run: brew install p7zip
+      if: matrix.os == 'macos-latest'
+
+    - name: Create archive for MacOS
+      run: 7z a -tzip ./artifacts/${{ env.RELEASE_BIN }}-osx-x86_64.zip ./target/release/${{ env.RELEASE_BIN }} ${{ env.RELEASE_ADDS }}
+      if: matrix.os == 'macos-latest'
+
+    - name: Release Native
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: ./artifacts/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  linux:
+    name: Build release
+    strategy:
+      fail-fast: false
+      matrix:
+        container:
+        - 'ubuntu:18.04'
+        - 'ubuntu:20.04'
+        - 'ubuntu:22.04'
+        - 'centos:7.9.2009'
+        - 'fedora:35'
+        - 'fedora:36'
+        - 'debian:10'
+        - 'debian:11'
+    runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Environment
+      run: |
+        apt update
+        apt install -y build-essential curl p7zip-full
+      if: contains( matrix.container, 'ubuntu' )
+
+    - name: Install Environment
+      run: |
+        yum -y groupinstall 'Development Tools'
+        yum install -y epel-release
+        yum install -y p7zip
+      if: contains( matrix.container, 'centos' )
+
+    - name: Install Environment
+      run: |
+        dnf -y update
+        dnf -y install @development-tools p7zip
+      if: contains( matrix.container, 'fedora' )
+
+    - name: Install Environment
+      run: |
+        apt update
+        apt install -y build-essential curl gcc make p7zip-full
+      if: contains( matrix.container, 'debian' )
+
+    - name: Install Rust (rustup)
+      run: |
+        curl https://sh.rustup.rs | sh -s -- -y
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      shell: bash
+
+    - name: Build
+      run: cargo build --verbose --release
+
+    - name: Create artifact directory
+      run: mkdir artifacts
+
+    - name: Create archive for Linux
+      run: 7za a -ttar -so -an ./target/release/${{ env.RELEASE_BIN }} ${{ env.RELEASE_ADDS }} | 7za a -si ./artifacts/${{ env.RELEASE_BIN }}-${{ matrix.container }}-x86_64.tar.gz
+
+    - name: Release Linux
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: ./artifacts/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,12 @@
+to allocate at 0x70000000 with 134217728 bytes 
+to allocate at 0x70000000 with 268435456 bytes 
+to allocate at 0x80000000 with 2147483648 bytes 
+arg gpgpu is numw:1,numt:4,numwg:1,kernelx:1,kernely:1,kernelz:1,ldssize:0x20000,pdssize:0x4000,pdsbase:0x78000000,knlbase:0x0,currwgid:0
+vaddr mem scope is -m0x70000000:0x100000000
+run log is written to 
+spike -l -l -p1 --isa rv32gcv_zfh --pc=0x80000000 -m0x70000000:0x100000000 --varch vlen:128,elen:32 --gpgpuarch numw:1,numt:4,numwg:1,kernelx:1,kernely:1,kernelz:1,ldssize:0x20000,pdssize:0x4000,pdsbase:0x78000000,knlbase:0x0,currwgid:0 --log= none 
+core   0: 0x00001000 (0x00000297) auipc   x5, 0x0
+core   0: 0x00001004 (0x02028593) addi    x11, x5, 32
+core   0: 0x00001008 (0xf1402573) csrr    x10, mhartid
+core   0: 0x0000100c (0x0182a283) lw      x5, 24(x5)
+core   0: 0x00001010 (0x00028067) jr      x5

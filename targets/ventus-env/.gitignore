@@ -1,0 +1,8 @@
+.patched
+.metals/
+.cache/
+.vscode/
+install/
+regression-test-logs/
+rodinia_data.tar.xz
+rodinia/

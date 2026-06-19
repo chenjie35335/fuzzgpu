@@ -1,0 +1,5 @@
+<map id="fuzzgpu::InstrPool" name="fuzzgpu::InstrPool">
+<area shape="rect" id="Node000001" title="Arena allocator for generated RISC&#45;V instruction objects." alt="" coords="5,108,144,133"/>
+<area shape="rect" id="Node000002" href="$classfuzzgpu_1_1InstrPool_1_1Chunk.html" title="Fixed&#45;size allocation chunk inside the instruction arena. Chunk currently receiving new instructions." alt="" coords="5,5,144,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,59,77,108,72,108,72,59"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="fuzzgpu::GenWarp::SIMIStack" name="fuzzgpu::GenWarp::SIMIStack">
+<area shape="rect" id="Node000001" title="Stack of pending SIMT reconvergence states. Pending SIMT divergence stack." alt="" coords="101,108,313,133"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,13,187,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="122,45,195,106,191,110,118,49"/>
+<area shape="rect" id="Node000003" href="$dc/dba/structfuzzgpu_1_1GenWarp_1_1SIMIStack_1_1Stat.html" title="Statistics for SIMT stack depth." alt="" coords="211,5,423,45"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="286,56,222,110,219,106,283,52"/>
+</map>
