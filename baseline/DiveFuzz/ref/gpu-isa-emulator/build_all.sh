@@ -46,7 +46,9 @@ build_variant() {
 }
 
 # 1. Vortex 32-bit
-build_variant "vortex" 32
+# Vortex32 is outside the current artifact coverage and would require the
+# riscv32 toolchain under $HOME/tools.
+# build_variant "vortex" 32
 
 # 2. Vortex 64-bit
 build_variant "vortex" 64
