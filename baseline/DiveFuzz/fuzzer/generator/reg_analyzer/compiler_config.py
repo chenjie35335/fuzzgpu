@@ -16,6 +16,37 @@ Compiler configuration for different architectures.
 Defines assembler, linker, and assembler flags for each supported architecture.
 """
 
+import os
+from pathlib import Path
+
+
+def _repo_root() -> Path:
+    override = os.environ.get('FUZZGPU_HOME') or os.environ.get('PRJ_HOME')
+    if override:
+        return Path(override).expanduser().resolve()
+
+    path = Path(__file__).resolve()
+    for parent in path.parents:
+        if (parent / 'targets' / 'ventus-env').exists():
+            return parent
+    return path.parents[5]
+
+
+_FUZZGPU_HOME = _repo_root()
+_VENTUS_INSTALL = Path(os.environ.get(
+    'VENTUS_INSTALL_PREFIX',
+    str(_FUZZGPU_HOME / 'targets' / 'ventus-env' / 'install'),
+)).expanduser()
+_RISCV32_TOOLCHAIN = Path(os.environ.get(
+    'RISCV32_TOOLCHAIN_ROOT',
+    os.path.expandvars('$HOME/tools/riscv32-gnu-toolchain'),
+)).expanduser()
+_RISCV64_TOOLCHAIN = Path(os.environ.get(
+    'RISCV_TOOLCHAIN_ROOT',
+    os.path.expandvars('$HOME/tools/riscv64-gnu-toolchain'),
+)).expanduser()
+
+
 # Architecture-specific compiler configurations
 COMPILER_CONFIG = {
     'default': {
@@ -29,9 +60,9 @@ COMPILER_CONFIG = {
         'ld_flags': '',  # Default linker has no special flags
     },
     'ventus': {
-        'as': '/home/ain/fuzz_gpgpu/fuzzgpu/targets/ventus-env/install/bin/clang',
-        'ld': '/home/ain/fuzz_gpgpu/fuzzgpu/targets/ventus-env/install/bin/clang',
-        'objcopy': '/home/ain/fuzz_gpgpu/fuzzgpu/targets/ventus-env/install/bin/llvm-objcopy',
+        'as': str(_VENTUS_INSTALL / 'bin' / 'clang'),
+        'ld': str(_VENTUS_INSTALL / 'bin' / 'clang'),
+        'objcopy': str(_VENTUS_INSTALL / 'bin' / 'llvm-objcopy'),
         'as_flags': ['--target=riscv32', '-mcpu=ventus-gpgpu', '-c'],
         'as_flags_32': ['--target=riscv32', '-mcpu=ventus-gpgpu', '-c'],
         'as_output_flag': '-o',  # clang uses -o for output
@@ -39,9 +70,9 @@ COMPILER_CONFIG = {
         'ld_flags': ['--target=riscv32', '-mcpu=ventus-gpgpu', '-nostdlib'],
     },
     'vortex32': {
-        'as': '/home/ain/tools/riscv32-gnu-toolchain/bin/riscv32-unknown-elf-as',
-        'ld': '/home/ain/tools/riscv32-gnu-toolchain/bin/riscv32-unknown-elf-ld',
-        'objcopy': '/home/ain/tools/riscv32-gnu-toolchain/bin/riscv32-unknown-elf-objcopy',
+        'as': str(_RISCV32_TOOLCHAIN / 'bin' / 'riscv32-unknown-elf-as'),
+        'ld': str(_RISCV32_TOOLCHAIN / 'bin' / 'riscv32-unknown-elf-ld'),
+        'objcopy': str(_RISCV32_TOOLCHAIN / 'bin' / 'riscv32-unknown-elf-objcopy'),
         'as_flags': ['-march=rv32ifmd_zicsr_zifencei'],
         'as_flags_32': ['-march=rv32ifmd_zicsr_zifencei'],
         'as_output_flag': '-o',
@@ -49,9 +80,9 @@ COMPILER_CONFIG = {
         'ld_flags': [],
     },
     'vortex64': {
-        'as': '/home/ain/tools/riscv64-gnu-toolchain/bin/riscv64-unknown-elf-as',
-        'ld': '/home/ain/tools/riscv64-gnu-toolchain/bin/riscv64-unknown-elf-ld',
-        'objcopy': 'riscv64-unknown-elf-objcopy',
+        'as': str(_RISCV64_TOOLCHAIN / 'bin' / 'riscv64-unknown-elf-as'),
+        'ld': str(_RISCV64_TOOLCHAIN / 'bin' / 'riscv64-unknown-elf-ld'),
+        'objcopy': str(_RISCV64_TOOLCHAIN / 'bin' / 'riscv64-unknown-elf-objcopy'),
         'as_flags': ['-march=rv64ifmd_zicsr_zifencei'],
         'as_flags_32': ['-march=rv64ifmd_zicsr_zifencei'],
         'as_output_flag': '-o',
