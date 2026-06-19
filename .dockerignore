@@ -4,6 +4,7 @@
 .vscode
 
 /build*/
+!/build.sh
 /cmake-build*/
 
 logs
