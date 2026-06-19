@@ -4,9 +4,13 @@ set -euo pipefail
 
 DIR=$(cd "$(dirname "${0}")" &> /dev/null && (pwd -W 2> /dev/null || pwd))
 VENTUS_INSTALL_PREFIX=${VENTUS_INSTALL_PREFIX:-${DIR}/install}
-PROGRAMS_TOBUILD_DEFAULT=(systemc llvm ocl-icd libclc spike gvm driver pocl rodinia cts test-pocl)
+# Original broad default:
+# PROGRAMS_TOBUILD_DEFAULT=(systemc llvm ocl-icd libclc spike gvm driver pocl rodinia cts test-pocl)
+PROGRAMS_TOBUILD_DEFAULT=(llvm)
 PROGRAMS_TOBUILD_DEFAULT_FULL=(systemc llvm ocl-icd libclc spike rtlsim cyclesim gvm driver pocl rodinia cts test-pocl)
-PROGRAMS_TOBUILD=(${PROGRAMS_TOBUILD_DEFAULT_FULL[@]})
+# Original full default:
+# PROGRAMS_TOBUILD=(${PROGRAMS_TOBUILD_DEFAULT_FULL[@]})
+PROGRAMS_TOBUILD=(${PROGRAMS_TOBUILD_DEFAULT[@]})
 
 BUILD_PARALLEL=$(( $(nproc) * 2 / 3 ))
 
@@ -27,7 +31,7 @@ Options:
     Chosen programs to build : [${PROGRAMS_TOBUILD}]
     Option format : "llvm;pocl", string are separated by semicolon.
     ( Note that quotation marks are necessary, or bash will parse the semicolon as command ending )
-    Default : "llvm;ocl-icd;libclc;spike;rtlsim;cyclesim;driver;pocl;rodinia;test-pocl"
+    Default : "llvm"
     'BUILD_TYPE' is default 'Release' which can be changed by enviroment variable
 
   --help | -h
