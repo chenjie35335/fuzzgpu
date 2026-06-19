@@ -15,6 +15,7 @@ DIVEFUZZ_WRAPPER="$PRJ_HOME/scripts/divefuzz_wrapper.py"
 CASCADE_GEN="$PRJ_HOME/baseline/cascade-meta/fuzzer/do_genmanyelfs.py"
 CASCADE_ENV="$PRJ_HOME/baseline/cascade-meta/env.sh"
 DIVEFUZZ_DIR="$PRJ_HOME/baseline/DiveFuzz"
+DIVEFUZZ_OPCODE_DICT="$DIVEFUZZ_DIR/fuzzer/generator/reg_analyzer/riscv-opcodes/instr_dict.json"
 
 # run_baseline.sh currently comments vortex:64 out, but this smoke unit covers
 # the intended baseline targets requested here.
@@ -145,6 +146,7 @@ check_method_dependencies() {
       ;;
     divefuzz)
       smoke_require_dir "$target" "$DIVEFUZZ_DIR" "DiveFuzz checkout"
+      smoke_require_file "$target" "$DIVEFUZZ_OPCODE_DICT" "DiveFuzz riscv-opcodes instruction dictionary"
       smoke_require_file "$target" "$DIVEFUZZ_WRAPPER" "DiveFuzz wrapper"
       smoke_require_text "$target" "$BASELINE_SCRIPT" "wrapper_script = script_dir / 'divefuzz_wrapper.py'" "DiveFuzz wrapper resolution"
       smoke_require_text "$target" "$BASELINE_SCRIPT" "'--instr-number'" "DiveFuzz instr-number arg"

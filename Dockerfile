@@ -120,6 +120,11 @@ RUN git submodule update --init --depth 1 --recursive thirdparty/verilator
 RUN source /root/envs/bin/activate && \
     pip install --no-cache-dir -r requirements.txt
 
+# Generate the riscv-opcodes files used by DiveFuzz's hybrid encoder.
+# These files are generated artifacts and are intentionally not tracked.
+RUN source /root/envs/bin/activate && \
+    make -C baseline/DiveFuzz/fuzzer/generator/reg_analyzer/riscv-opcodes
+
 # build Spike for Cascade
 RUN cd baseline/cascade-meta/tools/riscv-isa-sim && \
     mkdir -p build && \
@@ -135,9 +140,10 @@ RUN cd targets/ventus-env && \
     tar -xf rodinia_data.tar.xz && \
     bash build-ventus.sh
 
-# DiveFuzz refs
+# DiveFuzz ref engines
 RUN source /root/envs/bin/activate && \
-    baseline/DiveFuzz/ref/gpu-isa-emulator/build_all.sh
+    cd baseline/DiveFuzz/ref/gpu-isa-emulator && \
+    ./build_all.sh
 
 
 # build all (ensure network connecting, it will download toolchain)

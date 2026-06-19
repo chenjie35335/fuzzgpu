@@ -467,8 +467,11 @@ def generate_instructions(instr_number: int,
 
                     # --------- Instruction validation with duplicate elimination -----------
                     max_w = 2
-                    # TODO CPU: Currently does not support spike debug for CPU vector instructions (RV_V)
-                    # But it supports Ventus GPU 'rvv' extension.
+                    # Only the generic CPU vector extension label, RV_V, is
+                    # excluded from checkpoint validation here. Ventus uses the
+                    # separate "rvv" extension label, so its vector instructions
+                    # still enter this branch unless another condition excludes
+                    # them.
 
                     if eliminate_enable and extension != 'RV_V' and 'vx_bar' not in instr:
                         # NEW: Use checkpoint-based validation if available (O(n) mode)

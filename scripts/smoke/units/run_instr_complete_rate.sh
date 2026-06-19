@@ -15,6 +15,7 @@ DIVEFUZZ_WRAPPER="$PRJ_HOME/scripts/divefuzz_wrapper.py"
 CASCADE_GEN="$PRJ_HOME/baseline/cascade-meta/fuzzer/do_genmanyelfs.py"
 CASCADE_ENV="$PRJ_HOME/baseline/cascade-meta/env.sh"
 DIVEFUZZ_DIR="$PRJ_HOME/baseline/DiveFuzz"
+DIVEFUZZ_OPCODE_DICT="$DIVEFUZZ_DIR/fuzzer/generator/reg_analyzer/riscv-opcodes/instr_dict.json"
 
 # Original instruction-completion coverage, except vortex:32 is intentionally
 # excluded per current request.
@@ -112,6 +113,7 @@ check_method_dependencies() {
       ;;
     divefuzz)
       smoke_require_dir "$target" "$DIVEFUZZ_DIR" "DiveFuzz checkout"
+      smoke_require_file "$target" "$DIVEFUZZ_OPCODE_DICT" "DiveFuzz riscv-opcodes instruction dictionary"
       smoke_require_file "$target" "$DIVEFUZZ_WRAPPER" "DiveFuzz wrapper"
       smoke_require_text "$target" "$DIVEFUZZ_WRAPPER" "allowed_ext_name = 'ventus'" "DiveFuzz ventus extension config"
       smoke_require_text "$target" "$DIVEFUZZ_WRAPPER" "allowed_ext_name = 'vortex32' if is_rv32 else 'vortex64'" "DiveFuzz vortex XLEN extension config"

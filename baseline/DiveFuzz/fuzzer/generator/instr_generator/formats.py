@@ -8579,27 +8579,27 @@ INSTRUCTION_FORMATS = {
             "variables": ['VD', 'VS2', 'RS1', 'VM'],
             "category": "ARITHMETIC"
         },
-        ## llvm-as: error: unrecognized instruction mnemonic, did you mean: vmv.v.x?
-        "vmv.s.x": {
-            "format": "vmv.s.x {VD}, {RS1}",
-            "variables": ['VD', 'RS1'],
-            "category": "ARITHMETIC"
-        },
-        "vmv.v.i": {
-            "format": "vmv.v.i {VD}, {VIMM5_FIELD}",
-            "variables": ['VD', 'VIMM5_FIELD'],
-            "category": "ARITHMETIC"
-        },
-        "vmv.v.v": {
-            "format": "vmv.v.v {VD}, {VS1}",
-            "variables": ['VD', 'VS1'],
-            "category": "ARITHMETIC"
-        },
-        "vmv.x.s": {
-            "format": "vmv.x.s {RD}, {VS2}",
-            "variables": ['RD', 'VS2'],
-            "category": "ARITHMETIC"
-        },
+        ## llvm-as bug: error: unrecognized instruction mnemonic, did you mean: vmv.v.x?
+        #"vmv.s.x": {
+        #    "format": "vmv.s.x {VD}, {RS1}",
+        #    "variables": ['VD', 'RS1'],
+        #    "category": "ARITHMETIC"
+        #},
+        #"vmv.v.i": {
+        #    "format": "vmv.v.i {VD}, {VIMM5_FIELD}",
+        #    "variables": ['VD', 'VIMM5_FIELD'],
+        #    "category": "ARITHMETIC"
+        #},
+        #"vmv.v.v": {
+        #    "format": "vmv.v.v {VD}, {VS1}",
+        #    "variables": ['VD', 'VS1'],
+        #    "category": "ARITHMETIC"
+        #},
+        #"vmv.x.s": {
+        #    "format": "vmv.x.s {RD}, {VS2}",
+        #    "variables": ['RD', 'VS2'],
+        #    "category": "ARITHMETIC"
+        #},
         ##
         "vmv.v.x": {
             "format": "vmv.v.x {VD}, {RS1}",
