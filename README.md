@@ -4,7 +4,38 @@ FuzzGPU is a fuzzing framework designed for testing RISC-V based GPGPU hardware 
 
 ---
 
-## Documentation
+## Guick Start
+
+1. Follow the "A.3 Set-up" in the Artifact Appendix.
+```bash
+make docker
+```
+
+You can create the container with the image built in phase 1 via:
+```bash
+make run
+```
+In the container, you can enter the working directory via:
+```bash
+cd /root/fuzzgpu
+```
+
+Tip: After the container has been created or terminated, you can restart and attach to it with:
+
+```bash
+docker start -ai fuzzgpu-new
+```
+
+
+2. Follow the "A.4.2 Experiments". Note that E1 is optional if you have completed "A.3 Set-up".
+
+---
+
+## Running
+
+Please see the Artifact Appendix for details.
+
+## Generate Documentation (for reusing, optionally)
 
 Generate the Doxygen documentation:
 
@@ -38,7 +69,7 @@ Use the Doxygen navigation bar to browse the generated API reference:
 
 ---
 
-## Building
+## Building (for reusing, optionally)
 
 For the full list of build options, run:
 
@@ -58,12 +89,6 @@ Basic examples:
 # Build for Vortex 64-bit with line coverage and difftest.
 ./build.sh --arch vortex --xlen 64 --cov-line --dft
 ```
-
----
-
-## Running
-
-Please see the Artifact Appendix for details.
 
 ---
 
