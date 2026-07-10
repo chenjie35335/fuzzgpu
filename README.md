@@ -4,7 +4,7 @@ FuzzGPU is a fuzzing framework designed for testing RISC-V based GPGPU hardware 
 
 ---
 
-## Guick Start
+## Quick Start
 
 1. Follow the "A.3 Set-up" in the Artifact Appendix.
 ```bash
@@ -27,15 +27,9 @@ docker start -ai fuzzgpu-new
 ```
 
 
-2. Follow the "A.4.2 Experiments". Note that E1 is optional if you have completed "A.3 Set-up".
+2. Follow the "A.4.2 Experiments" in the Artifact Appendix. Note that E1 is optional if you have completed "A.3 Set-up".
 
----
-
-## Running
-
-Please see the Artifact Appendix for details.
-
-## (E2): Instruction completion rate (validating C1).
+### (E2): Instruction completion rate (validating C1).
 Execution:
 ```
 scripts/run_E2.sh
@@ -43,7 +37,7 @@ scripts/run_E2.sh
 
 Results: `results/plots/instr_complete_rate.pdf` reproduces Figure 10.
 
-## (E3): measurement (validating C3).
+### (E3): measurement (validating C3).
 Execution:
 ```
 scripts/run_E3.sh
@@ -51,7 +45,7 @@ scripts/run_E3.sh
 Results: `results/plots/gen_throughput_vortex_xlen64.pdf` reproduces Figure 11.
 `results/plots/effective_throughput_vortex_xlen64.pdf` reproduces Figure 12.
 
-## (E4): measurement (validating C5).
+### (E4): measurement (validating C5).
 Execution:
 ```
 scripts/run_E4.sh
