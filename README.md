@@ -134,7 +134,9 @@ Basic examples:
 
 ---
 
-## Reduced-Parameter Experiment Runs
+## Reduced-Parameter Experiment Runs (for reusing, optionally)
+
+Note: This section is intended to facilitate future reuse. The procedure for running the experiments has already been described earlier and is therefore NOT repeated in this section.
 
 The `scripts/run_E2.sh` to `scripts/run_E6.sh` wrappers reproduce the paper
 experiments. Some experiments may be run with reduced parameters to complete in
