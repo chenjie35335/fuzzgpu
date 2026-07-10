@@ -35,6 +35,47 @@ docker start -ai fuzzgpu-new
 
 Please see the Artifact Appendix for details.
 
+## (E2): Instruction completion rate (validating C1).
+Execution:
+```
+scripts/run_E2.sh
+```
+
+Results: `results/plots/instr_complete_rate.pdf` reproduces Figure 10.
+
+## (E3): measurement (validating C3).
+Execution:
+```
+scripts/run_E3.sh
+```
+Results: `results/plots/gen_throughput_vortex_xlen64.pdf`
+
+## (E4): measurement (validating C5).
+Execution:
+```
+scripts/run_E4.sh
+```
+Results: `results/plots/coverage_comparison_ventus_x32_combined.pdf` reproduces Figure 15.
+
+### (E5): Ablation study (validating C6).
+Execution:
+```
+scripts/run_E5.sh
+```
+Results: It reproduces Section 5.4.
+
+### (E6): Fuzzing campaign (validating C2, C4, and C7).
+Execution:
+```
+scripts/run_E6.sh.
+```
+Results: It reproduces Table 2, Figure 14 (`results/plots/time_breakdown_fuzzgpu.pdf`), and Figure 16 (`results/plots/bug_discover_time.pdf`).
+
+### What to expect
+The absolute values from our AE server may differ from those reported in the paper because we are using a different hardware configuration—AMD EPYC 9T95 rather than Intel® Xeon® 6982P-C due to resource limitation, and fuzzing performance is hardware-dependent.
+
+Nevertheless, the results should be sufficient to validate the claim.
+
 ## Generate Documentation (for reusing, optionally)
 
 Generate the Doxygen documentation:
