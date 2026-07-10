@@ -48,7 +48,8 @@ Execution:
 ```
 scripts/run_E3.sh
 ```
-Results: `results/plots/gen_throughput_vortex_xlen64.pdf`
+Results: `results/plots/gen_throughput_vortex_xlen64.pdf` reproduces Figure 11.
+`results/plots/effective_throughput_vortex_xlen64.pdf` reproduces Figure 12.
 
 ## (E4): measurement (validating C5).
 Execution:
