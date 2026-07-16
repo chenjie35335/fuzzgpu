@@ -164,7 +164,10 @@ Generator::gen_thread_ctrl_(const std::shared_ptr<GenWarp> &gen_warp,
 #endif
 #elif defined(ARCH_VENTUS)
     if (instr.meta()->is_vm_computation()) {
-      if (BugFilter::instance().filter("vmask")) {
+      // Ventus Spike's BUG: Its mask loop uses 64-bit elements. A single-thread
+      // wavefront configures VLEN=32 and makes generation abort in elt<uint64_t>.
+      if (BugFilter::instance().filter("vmask") ||
+          gen_warp->num_active_threads() == 1) {
         return ThreadCtrlGenStatus::Skip; // skip vmask instruction
       } else {
         gen_warp->scratchpad.emit(&instr);
