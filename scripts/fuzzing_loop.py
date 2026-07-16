@@ -556,6 +556,23 @@ def get_bug_filter_path_if_exists(method_dir: Path) -> Optional[str]:
         return str(filter_file) if filter_file.exists() else None
 
 
+def snapshot_bug_filter_json(method_dir: Path, test_dir: Path) -> Optional[str]:
+    """Snapshot the current bug filter for one testcase.
+
+    The instruction-info query and fuzzgpu invocation must observe identical
+    filter contents because the probability vector is indexed by the resulting
+    registered instruction list.
+    """
+    with _phase1_lock:
+        filter_file = method_dir / 'bug_filter.json'
+        if not filter_file.exists():
+            return None
+
+        snapshot_file = test_dir / 'bug_filter.json'
+        snapshot_file.write_bytes(filter_file.read_bytes())
+        return str(snapshot_file)
+
+
 def cascade_elf_num_threads(elf_out_dir: Path, elf_name: str, default_num_threads: int) -> int:
     active_threads_file = elf_out_dir / f'{elf_name}_active_threads.txt'
     if not active_threads_file.exists():
@@ -711,8 +728,9 @@ def run_fuzzgpu_worker(args, worker_id, fuzz_exe, emu_exe, work_dir, fuzzgpu_dir
         
         max_num_instrs = args.force_max_num_instrs or random.randrange(100, 10000)
         
-        # Get bug filter file path (thread-safe check to avoid TOCTOU race)
-        bug_filter_json_str = get_bug_filter_path_if_exists(work_dir)
+        # Freeze the filter contents for both instruction discovery and generation.
+        # The shared filter may be updated by another worker between subprocesses.
+        bug_filter_json_str = snapshot_bug_filter_json(work_dir, test_dir)
         
         # Re-fetch instruction info before each fuzz run with the same bug filter
         # This ensures instruction set is consistent with bug filtering
