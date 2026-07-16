@@ -20,7 +20,7 @@ public:
   bool dump_regs{false}, dump_all_regs{false}, dump_call_stack{false}, dump_retired_insn{false};
   bool crash_on_error{false};
   std::unordered_set<uint64_t> crash_on_pc;
-  bool debug_crash{true};
+  bool debug_crash{false};
   std::unordered_set<uint64_t> breakpoints;
 
   //

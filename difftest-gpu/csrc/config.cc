@@ -60,6 +60,12 @@ Config::Config(const Arch &arch_)
                  crash_on_error, TermColor::RESET);
   }
 
+  if (const auto *var = std::getenv("DIFFTEST_DEBUG_CRASH")) {
+    debug_crash = std::strtoull(var, nullptr, 10);
+    spdlog::info("{}debug_crash = {}{}", TermColor::YELLOW, debug_crash,
+                 TermColor::RESET);
+  }
+
   if (const auto *var = std::getenv("DIFFTEST_CRASH_ON_PC")) {
     std::string s(var);
     std::string token;
