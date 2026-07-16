@@ -874,6 +874,8 @@ def main():
                     
                     if rc == 0:
                         print(f"  {GREEN}Seed {display_id}: Success ({elapsed:.2f}s) Coverage: {cov:.2f}% ({exec_n}/{total_n}) Divergent: {thread_divergent_rate:.2f}%{RESET}")
+                    elif rc == 1:
+                        print(f"  {YELLOW}Seed {display_id}: Completed (rc=1). Coverage: {cov:.2f}% ({exec_n}/{total_n}) See {log_path}{RESET}")
                     else:
                         print(f"  {RED}Seed {display_id}: Failed (rc={rc}). Coverage: {cov:.2f}% ({exec_n}/{total_n}) See {log_path}{RESET}")
                     results.append((display_id, rc, log_path))
