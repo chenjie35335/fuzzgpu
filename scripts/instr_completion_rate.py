@@ -898,13 +898,11 @@ def main():
                     f.cancel()
                 
         # Summary
-        successes = [r for r in results if r[1] == 0]
         failures = [r for r in results if r[1] != 0]
         
         print(f"\n{GREEN}Summary for {conf_name}:{RESET}")
-        print(f"  Total: {len(results)}")
-        print(f"  Success: {len(successes)}")
-        print(f"  Failures: {len(failures)}")
+        print(f"  Reported: {len(tasks)}")
+        print(f"  Counted: {len(coverage_data)}")
 
         # Save metrics data to results directory (for plotting)
         metrics_log_path = os.path.join(results_dir, 'metrics.json')
