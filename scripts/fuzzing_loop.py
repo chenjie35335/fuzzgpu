@@ -325,6 +325,9 @@ def run_command(cmd, logfile_path, timeout=None, env=None, record_logs=True, max
     """
     if max_log_size is None:
         max_log_size = MAX_LOG_FILE_SIZE_BYTES
+
+    if _stop_event.is_set():
+        return -1, 0.0
     
     lf_handle = None
     stdout_target = subprocess.DEVNULL
@@ -370,7 +373,14 @@ def run_command(cmd, logfile_path, timeout=None, env=None, record_logs=True, max
                         os.killpg(proc.pid, signal.SIGTERM)
                     except Exception:
                         proc.terminate()
-                    proc.wait(timeout=1)
+                    try:
+                        proc.wait(timeout=1)
+                    except subprocess.TimeoutExpired:
+                        try:
+                            os.killpg(proc.pid, signal.SIGKILL)
+                        except Exception:
+                            proc.kill()
+                        proc.wait()
                     return -1, time.time() - start
                 if timeout and (time.time() - start) > timeout:
                     try:
