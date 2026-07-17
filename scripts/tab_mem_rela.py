@@ -6,7 +6,7 @@ Reads fuzzing_loop.py output (phase1_results.json) and calculates statistics
 
 Scans:
 - method: fuzzgpu (fixed)
-- arch/xlen: ventus/32, vortex/64
+- arch/xlen: vortex/64, ventus/32
 
 Usage:
     python tab_mem_rela.py
@@ -41,8 +41,8 @@ fuzzgpu_dir = script_dir.parent
 # Fixed configuration
 METHOD = "fuzzgpu"
 ARCH_XLEN_CONFIGS = [
-    {"arch": "ventus", "xlen": 32},
     {"arch": "vortex", "xlen": 64},
+    {"arch": "ventus", "xlen": 32},
 ]
 
 # Memory relation keys to analyze (edges only)
