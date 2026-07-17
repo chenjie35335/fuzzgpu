@@ -177,6 +177,9 @@ if("${ARCH}" STREQUAL "vortex")
   endif()
 
   set(VORTEX_BUILD_DIR ${VORTEX_HOME}/build${XLEN}-cov${VORTEX_COV_TYPE}-dft${VORTEX_DFT_ENABLED})
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND ENABLE_EMU_DEBUG)
+    string(APPEND VORTEX_BUILD_DIR "-debug")
+  endif()
   set(VORTEX_ISA_EMULATOR_LIB ${VORTEX_BUILD_DIR}/runtime/libemulator_vortex.a)
   set(VORTEX_DUT_LIB ${VORTEX_BUILD_DIR}/sim/difftest/libdifftest.so)
 
