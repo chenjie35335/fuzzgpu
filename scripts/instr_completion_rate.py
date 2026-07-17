@@ -457,6 +457,48 @@ def main():
     original_elf_out_dir = Path(args.out_elf_dir)
     original_results_base_dir = results_base_dir
 
+    def generate_required_seeds(run_generator, required_count, handle_result):
+        """Run generators until exactly required_count seeds succeed."""
+        max_attempts = max(required_count * 10, required_count + args.jobs * 4)
+        successful_seed_ids = []
+        failed_attempts = 0
+        next_seed_id = 0
+
+        with ThreadPoolExecutor(max_workers=args.jobs) as executor:
+            pending = {}
+
+            def fill_pending():
+                nonlocal next_seed_id
+                while (len(successful_seed_ids) + len(pending) < required_count
+                       and next_seed_id < max_attempts):
+                    future = executor.submit(run_generator, next_seed_id)
+                    pending[future] = next_seed_id
+                    next_seed_id += 1
+
+            fill_pending()
+            while pending and len(successful_seed_ids) < required_count:
+                if _stop_event.is_set():
+                    raise KeyboardInterrupt
+                done, _ = wait(set(pending), timeout=0.2,
+                               return_when=FIRST_COMPLETED)
+                for future in done:
+                    pending.pop(future)
+                    result = future.result()
+                    handle_result(result)
+                    if result[1] == 0:
+                        successful_seed_ids.append(result[0])
+                    else:
+                        failed_attempts += 1
+                fill_pending()
+
+        if len(successful_seed_ids) != required_count:
+            raise RuntimeError(
+                f"Generated only {len(successful_seed_ids)}/{required_count} seeds "
+                f"after {next_seed_id} attempts"
+            )
+
+        return sorted(successful_seed_ids), failed_attempts, next_seed_id
+
     for conf_name, conf_threads, conf_warps in configs:
         print(f"{GREEN}Running config: {conf_name}{RESET}")
         
@@ -472,6 +514,7 @@ def main():
         cur_num_threads_per_warp = conf_threads
         execute_warps = conf_warps
         cur_num_warps_per_core = conf_warps # Assuming single core focus for these tests
+        successful_seed_ids = list(range(args.num_seeds))
 
         warps_limit = []
         if args.arch == 'vortex':
@@ -627,10 +670,16 @@ def main():
                                                 with open(elf_out_dir / f"{args.arch}_{seed_id}_m{r}_numinstrs.txt", 'w') as nf:
                                                     nf.write(str(mut_res.get('instr_count', 0)))
                                             else:
-                                                 print(f"  {RED}Seed {seed_id} mutant {r} compilation failed{RESET}")
+                                                 print(f"  {YELLOW}[retry] Seed {seed_id} mutant {r} compilation failed{RESET}")
+                                                 rc = 1
                                                  break # Stop mutation chain if compilation fails
+                                    else:
+                                        print(f"  {YELLOW}[retry] Seed {seed_id} mutant {r} produced no result. See {mut_log_file}{RESET}")
+                                        rc = 1
+                                        break
                                 else:
-                                    print(f"  {RED}Seed {seed_id} mutant {r} generation failed. See {mut_log_file}{RESET}")
+                                    print(f"  {YELLOW}[retry] Seed {seed_id} mutant {r} generation failed. See {mut_log_file}{RESET}")
+                                    rc = 1
                                     break # Stop mutation chain
                                     
                         else:
@@ -641,18 +690,20 @@ def main():
                 return seed_id, rc, elapsed
 
             gen_start_time = time.time()
-            failed_seeds = 0
-            with ThreadPoolExecutor(max_workers=args.jobs) as executor:
-                futures = {executor.submit(run_divefuzz_gen, i): i for i in range(args.num_seeds)}
-                for future in as_completed(futures):
-                    seed_id, rc, elapsed = future.result()
-                    if rc != 0:
-                        failed_seeds += 1
-                        log_file = os.path.join(out_log_dir, f'gen_{seed_id}.log')
-                        print(f"  {RED}Seed {seed_id} generation failed. See {log_file}{RESET}")
-            
+
+            def report_divefuzz_result(result):
+                seed_id, rc, _ = result
+                if rc != 0:
+                    log_file = os.path.join(out_log_dir, f"gen_{seed_id}.log")
+                    print(f"  {YELLOW}[retry] Seed {seed_id} generation failed; trying a replacement. See {log_file}{RESET}")
+
+            successful_seed_ids, failed_seeds, attempted_seeds = generate_required_seeds(
+                run_divefuzz_gen, args.num_seeds, report_divefuzz_result
+            )
             gen_elapsed = time.time() - gen_start_time
-            print(f"{GREEN}DiveFuzz generation completed in {gen_elapsed:.2f}s. Failures: {failed_seeds}/{args.num_seeds}{RESET}")
+            print(f"{GREEN}DiveFuzz generation completed in {gen_elapsed:.2f}s. "
+                  f"Generated: {len(successful_seed_ids)}/{args.num_seeds}, "
+                  f"failed attempts: {failed_seeds}, attempts: {attempted_seeds}{RESET}")
         
         elif args.method == 'fuzzgpu':
             print(f"{GREEN}Starting fuzzgpu generation for {args.num_seeds} seeds...{RESET}")
@@ -702,21 +753,22 @@ def main():
                 return seed_id, rc, elapsed, num_instrs
             
             gen_start_time = time.time()
-            failed_seeds = 0
-            with ThreadPoolExecutor(max_workers=args.jobs) as executor:
-                futures = {executor.submit(run_fuzzgpu_gen, i): i for i in range(args.num_seeds)}
-                for future in as_completed(futures):
-                    seed_id, rc, elapsed, num_instrs = future.result()
-                    if rc != 0:
-                        failed_seeds += 1
-                        test_dir = elf_out_dir / f'testcase_{seed_id}'
-                        gen_log = test_dir / 'gen.log'
-                        print(f"  {RED}Seed {seed_id} generation failed. See {gen_log}{RESET}")
-                    else:
-                        print(f"  {GREEN}Seed {seed_id} generated ({num_instrs} instrs){RESET}")
-            
+
+            def report_fuzzgpu_result(result):
+                seed_id, rc, _, num_instrs = result
+                if rc != 0:
+                    gen_log = elf_out_dir / f"testcase_{seed_id}" / "gen.log"
+                    print(f"  {YELLOW}[retry] Seed {seed_id} generation failed; trying a replacement. See {gen_log}{RESET}")
+                else:
+                    print(f"  {GREEN}Seed {seed_id} generated ({num_instrs} instrs){RESET}")
+
+            successful_seed_ids, failed_seeds, attempted_seeds = generate_required_seeds(
+                run_fuzzgpu_gen, args.num_seeds, report_fuzzgpu_result
+            )
             gen_elapsed = time.time() - gen_start_time
-            print(f"{GREEN}fuzzgpu generation completed in {gen_elapsed:.2f}s. Failures: {failed_seeds}/{args.num_seeds}{RESET}")
+            print(f"{GREEN}fuzzgpu generation completed in {gen_elapsed:.2f}s. "
+                  f"Generated: {len(successful_seed_ids)}/{args.num_seeds}, "
+                  f"failed attempts: {failed_seeds}, attempts: {attempted_seeds}{RESET}")
         
         # Step 2: Emulation
         print(f"{GREEN}Starting emulation...{RESET}")
@@ -853,7 +905,7 @@ def main():
         coverage_data = []
         tasks = []
         # Add tasks for base seeds
-        for i in range(args.num_seeds):
+        for i in successful_seed_ids:
             tasks.append((i, None))
             # Add tasks for mutants
             if args.method == 'divefuzz' and args.mutation_rounds > 0:
