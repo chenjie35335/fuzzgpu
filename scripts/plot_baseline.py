@@ -23,14 +23,16 @@ RESET = "\033[0m"
 # Method name mapping for display
 METHOD_DISPLAY_NAMES = {
     'fuzzgpu_random': 'FuzzGPU',
+    'fuzzgpu_vanilla': 'FuzzGPU',
     'cascade': 'Ported-Cascade',
     'divefuzz': 'Ported-DiveFuzz',
 }
 
 # Fixed order and colors for methods to ensure consistency across subplots
-METHOD_ORDER = ['fuzzgpu_random', 'cascade', 'divefuzz']
+METHOD_ORDER = ['fuzzgpu_random', 'fuzzgpu_vanilla', 'cascade', 'divefuzz']
 METHOD_COLORS = {
     'fuzzgpu_random': '#d62728',  # red
+    'fuzzgpu_vanilla': '#d62728',  # red
     'cascade': '#1f77b4',         # blue
     'divefuzz': '#2ca02c',        # green
 }
@@ -182,7 +184,9 @@ def plot_coverage_for_config(config_key, method_latest, output_path):
                 max_cov.append(current_max)
 
             display_name = _get_display_name(method_name)
-            plt.plot(times_core_hours, max_cov, label=display_name, linewidth=1)
+            color = _get_method_color(method_name)
+            plt.plot(times_core_hours, max_cov, label=display_name, linewidth=1,
+                     color=color)
     
     plt.xlabel('Core Hours')
     # Set ylabel based on coverage type
