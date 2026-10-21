@@ -1,1 +1,0 @@
-localparam UNUSED = 1;

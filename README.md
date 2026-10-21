@@ -29,29 +29,6 @@ docker start -ai fuzzgpu-new
 
 2. Follow the "A.4.2 Experiments" in the Artifact Appendix. Note that E1 is optional if you have completed "A.3 Set-up".
 
-### (E2): Instruction completion rate (validating C1).
-Execution:
-```
-scripts/run_E2.sh
-```
-
-Results: `results/plots/instr_complete_rate.pdf` reproduces Figure 10.
-
-### (E3): measurement (validating C3).
-Execution:
-```
-scripts/run_E3.sh
-```
-Results: `results/plots/gen_throughput_vortex_xlen64.pdf` reproduces Figure 11.
-`results/plots/effective_throughput_vortex_xlen64.pdf` reproduces Figure 12.
-
-### (E4): measurement (validating C5).
-Execution:
-```
-scripts/run_E4.sh
-```
-Results: `results/plots/coverage_comparison_ventus_x32_combined.pdf` reproduces Figure 15.
-
 ### (E5): Ablation study (validating C6).
 Execution:
 ```
@@ -62,9 +39,9 @@ Results: It reproduces Section 5.4.
 ### (E6): Fuzzing campaign (validating C2, C4, and C7).
 Execution:
 ```
-scripts/run_E6.sh.
+scripts/run_E6.sh
 ```
-Results: It reproduces Table 2, Figure 14 (`results/plots/time_breakdown_fuzzgpu.pdf`), and Figure 16 (`results/plots/bug_discover_time.pdf`).
+Results: FuzzGPU bug summaries, runtime breakdown (`results/plots/time_breakdown_fuzzgpu.pdf`), and bug discovery times (`results/plots/bug_discover_time.pdf`).
 
 ### What to expect
 The absolute values from our AE server may differ from those reported in the paper because we are using a different hardware configuration—AMD EPYC 9T95 rather than Intel® Xeon® 6982P-C due to resource limitation, and fuzzing performance is hardware-dependent.
@@ -132,50 +109,16 @@ Basic examples:
 
 Note: This section is intended to facilitate future reuse. The procedure for running the experiments has already been described earlier and is therefore NOT repeated in this section.
 
-The `scripts/run_E2.sh` to `scripts/run_E6.sh` wrappers reproduce the paper
-experiments. Some experiments may be run with reduced parameters to complete in
+The `scripts/run_E5.sh` and `scripts/run_E6.sh` wrappers run the ablation
+study and FuzzGPU fuzzing campaign. Some experiments may be run with reduced parameters to complete in
 a reasonable amount of time, while conserving the tendency shown in the paper.
 Reduced runs are intended for quick validation of trends, not for regenerating
 the exact paper numbers.
 
 The easiest way to shorten a run is to open the corresponding `scripts/run_*.sh`
 file and reduce the variables near the top of the script. The wrappers
-`run_E2.sh` to `run_E6.sh` usually call one or two lower-level scripts; edit
+`run_E5.sh` and `run_E6.sh` call lower-level scripts; edit
 those lower-level scripts directly.
-
-### E2: Instruction Completion Rate
-
-Edit `scripts/run_instr_complete_rate.sh`.
-
-Recommended quick-run changes:
-
-- Reduce `NUM_SEEDS` from `5000` to `100` or `500`.
-- Keep only one entry in `ARCH_XLEN_CONFIGS`.
-- Keep only one entry in `METHODS`.
-- Increase `JOBS` only if the machine has enough cores and memory.
-
-### E3: Fuzzed Instruction Throughput
-
-Edit `scripts/run_fuzz_instr_throughput.sh`.
-
-Recommended quick-run changes:
-
-- Reduce `TARGET_TIME` from `60` seconds to `10` or `20`.
-- Keep `ARCH` and `XLEN` to a single target.
-- Use the reduced result to check relative throughput trends; short timing runs
-  are noisier than the paper-scale run.
-
-### E4: Baseline Coverage
-
-Edit `scripts/run_baseline.sh`.
-
-Recommended quick-run changes:
-
-- Reduce `TARGET_TIME` from `1800` seconds to `300` or less.
-- Keep only one entry in `ARCH_XLEN_CONFIGS`.
-- Keep only one coverage type in `COV_TYPES`, for example `expr`.
-- Keep only one method in `ALL_METHODS`, or run the script with `--method
-  fuzzgpu`.
 
 ### E5: Ablation Study
 

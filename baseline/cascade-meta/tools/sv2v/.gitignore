@@ -1,6 +1,0 @@
-*.swp
-dist/
-bin/
-.stack-work/
-.hpc/
-*.tix

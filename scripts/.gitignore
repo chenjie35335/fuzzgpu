@@ -1,7 +1,5 @@
 __pycache__/
 logs/
-baseline_logs/
-cascade_logs_ventus_32
 trace.vcd
 trace/
 *.log

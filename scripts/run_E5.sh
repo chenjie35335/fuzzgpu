@@ -5,7 +5,7 @@ if [[ -t 0 ]]; then
     RUN_TTY_STATE=$(stty -g)
     trap 'stty "$RUN_TTY_STATE" 2>/dev/null || true' EXIT
 fi
-source scripts/baseline_envs.sh
+source scripts/envs.sh
 
 scripts/run_ablation_program_metric.sh
 

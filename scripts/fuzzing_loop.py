@@ -19,7 +19,7 @@ The --analyze mode works with only the results directory content.
 If logs are available (work_dir exists), re-analyzes them.
 If logs are deleted, loads cached phase2_results.json.
 
-Simplified from baseline.py:
+Fuzzing configuration:
 - No CEM/OpcodeBalance optimizer
 - --cov-type fixed to 'none'
 - --dft-enabled fixed to True
@@ -284,7 +284,6 @@ _stop_event = threading.Event()
 
 _stats_lock = threading.Lock()
 _seed_counter = 0
-_run_counter = 0
 _first_gen_start_time: Optional[float] = None
 _total_instrs = 0
 
@@ -555,17 +554,6 @@ def save_bug_filter_json(method_dir: Path) -> Path:
         return _save_bug_filter_json_unlocked(method_dir)
 
 
-def get_bug_filter_path_if_exists(method_dir: Path) -> Optional[str]:
-    """Thread-safe check for bug_filter.json existence.
-    
-    Returns the path string if file exists, None otherwise.
-    Must be called to avoid TOCTOU race conditions.
-    """
-    with _phase1_lock:
-        filter_file = method_dir / 'bug_filter.json'
-        return str(filter_file) if filter_file.exists() else None
-
-
 def snapshot_bug_filter_json(method_dir: Path, test_dir: Path) -> Optional[str]:
     """Snapshot the current bug filter for one testcase.
 
@@ -581,17 +569,6 @@ def snapshot_bug_filter_json(method_dir: Path, test_dir: Path) -> Optional[str]:
         snapshot_file = test_dir / 'bug_filter.json'
         snapshot_file.write_bytes(filter_file.read_bytes())
         return str(snapshot_file)
-
-
-def cascade_elf_num_threads(elf_out_dir: Path, elf_name: str, default_num_threads: int) -> int:
-    active_threads_file = elf_out_dir / f'{elf_name}_active_threads.txt'
-    if not active_threads_file.exists():
-        return default_num_threads
-    try:
-        active_threads = int(active_threads_file.read_text().strip())
-    except Exception:
-        return default_num_threads
-    return active_threads if active_threads > 0 else default_num_threads
 
 
 def save_phase1_results(results_dir: Path):
@@ -635,7 +612,7 @@ def run_emulator_with_stats(
 ) -> EmulatorResult:
     """Run emulator and extract timing stats from stat.json.
     
-    This is a shared helper for all fuzzing methods (fuzzgpu, cascade, divefuzz).
+    Run the FuzzGPU emulator and collect execution statistics.
     
     Args:
         emu_cmd: Emulator command to run
@@ -868,396 +845,6 @@ def run_fuzzgpu_worker(args, worker_id, fuzz_exe, emu_exe, work_dir, fuzzgpu_dir
             save_phase1_results(_results_dir)
 
 
-def run_cascade_worker(args, worker_id, emu_exe, work_dir, gen_script, arch_config, fuzzgpu_dir):
-    """Phase 1 worker for cascade method.
-    
-    File locations:
-      - Temp files (elf, gen.log, stat.json): work_dir
-      - Persistent logs (emu.log): _results_dir/logs/
-    """
-    global _run_counter, _total_instrs, _first_gen_start_time
-    
-    # Create logs directory in results_dir for persistent emu logs
-    logs_dir = _results_dir / 'logs'
-    os.makedirs(logs_dir, exist_ok=True)
-    
-    while not _stop_event.is_set():
-        if check_stop_conditions(args.target_instr_count, args.target_time):
-            break
-        
-        with _stats_lock:
-            run_id = _run_counter
-            _run_counter += 1
-        
-        sim_start = time.time()
-        with _stats_lock:
-            if _first_gen_start_time is None:
-                _first_gen_start_time = sim_start
-                with _phase1_lock:
-                    if _phase1_results:
-                        _phase1_results.first_gen_start_time = sim_start
-        
-        # Temp files in work_dir
-        run_dir = work_dir / f'run_{run_id}'
-        elf_out_dir = run_dir / 'elf'
-        os.makedirs(elf_out_dir, exist_ok=True)
-        
-        # Persistent logs in results_dir/logs/
-        gen_log = logs_dir / f'run_{run_id}_gen.log'
-        
-        num_warps = args.num_genwarps_per_block if args.arch == 'ventus' else arch_config.get('vortex_nr_warps_per_core', 4)
-        design_name = f"{args.arch}{args.xlen}" if args.arch == 'vortex' else args.arch
-        bug_filter_json_str = get_bug_filter_path_if_exists(work_dir)
-        
-        gen_cmd = [
-            sys.executable, str(gen_script),
-            str(args.cascade_num_seeds), str(elf_out_dir),
-            '--num-warps-per-core', str(num_warps),
-            '--num-threads-per-warp', str(arch_config.get('nr_threads_per_warp', 4)),
-            '--arch', design_name,
-            '--emulator-path', str(emu_exe),
-            '--seed-id', str(run_id)
-        ]
-        if bug_filter_json_str:
-            gen_cmd.extend(['--bug-filter-json', bug_filter_json_str])
-        
-        if args.arch == 'vortex':
-            gen_cmd += ['--vortex-max-num-barrier', str(arch_config.get('num_barriers', 4)),
-                        '--vortex-max-barrier-count', str(max(arch_config.get('vortex_nr_warps_per_core', 4), arch_config.get('vortex_nr_cores_per_cluster', 1)))]
-        
-        gen_start = time.time()
-        rc1, gen_time = run_command(gen_cmd, str(gen_log), record_logs=args.record_logs)
-        if rc1 != 0:
-            print(f"  {RED}Worker {worker_id}: cascade gen failed run {run_id}{RESET}")
-            continue
-        
-        # For cascade, gen_time is the total generation time for all seeds
-        gen_time_per_seed = gen_time / max(args.cascade_num_seeds, 1)
-        
-        elf_files = list(elf_out_dir.glob('*.elf'))
-        for idx, elf_path in enumerate(elf_files):
-            if _stop_event.is_set():
-                break
-            
-            elf_name = elf_path.stem
-            seed_id = run_id * args.cascade_num_seeds + idx
-            
-            # Persistent emu log in results_dir/logs/
-            emu_log = logs_dir / f'run_{run_id}_{elf_name}_emu.log'
-            # Temp stat.json in work_dir
-            stat_json = run_dir / f'{elf_name}.stat.json'
-            
-            emu_cmd = [
-                emu_exe, '--elf', str(elf_path),
-                '--elf-num-genblocks', str(args.num_genblocks),
-                '--elf-num-genwarps-per-block', str(args.num_genwarps_per_block),
-                '--elf-num-threads-per-warp', str(cascade_elf_num_threads(elf_out_dir, elf_name, arch_config.get('nr_threads_per_warp', 4))),
-                '--stat-jsonfile', str(stat_json)
-            ]
-            if args.emulate:
-                emu_cmd.append('--emulate')
-            
-            # Run emulator and extract stats
-            emu_result = run_emulator_with_stats(
-                emu_cmd, emu_log, stat_json,
-                record_logs=args.record_logs
-            )
-            sim_end = time.time()
-            
-            num_instrs = 0
-            numinstrs_file = elf_out_dir / f'{elf_name}_numinstrs.txt'
-            try:
-                if numinstrs_file.exists():
-                    num_instrs = int(numinstrs_file.read_text().strip(), 16)
-                    with _stats_lock:
-                        _total_instrs += num_instrs
-            except Exception:
-                pass
-            
-            # emu_log_path is relative to results_dir
-            rel_path = str(emu_log.relative_to(_results_dir))
-            record = TestRecord(
-                seed_id=seed_id,
-                emu_log_path=rel_path,
-                sim_start_time=sim_start,
-                sim_end_time=sim_end,
-                num_instrs=num_instrs,
-                emu_num_instrs=emu_result.emu_num_instrs,
-                success=emu_result.emu_success,
-                stat_json_data=emu_result.stat_json_data,
-                gen_time=gen_time_per_seed,
-                emu_time=emu_result.emu_time,
-                program_construction_time_ms=gen_time_per_seed * 1000.0,  # For cascade, all gen time is program construction
-                file_write_time_ms=0.0,
-                memory_check_time_ms=emu_result.memory_check_time_ms,
-                rtl_emu_time_ms=emu_result.rtl_emu_time_ms,
-            )
-            add_test_record(record)
-            
-            # Quick bug detect (no filter maintenance for cascade)
-            phase1_quick_bug_detect(emu_log, seed_id, work_dir, sim_end_time=sim_end)
-        
-        print(f"  {GREEN}Worker {worker_id}: run {run_id} done ({len(elf_files)} tests){RESET}")
-        if run_id % 5 == 0:
-            save_phase1_results(_results_dir)
-
-
-def run_divefuzz_worker(args, worker_id, emu_exe, work_dir, divefuzz_dir, wrapper_script, arch_config, fuzzgpu_dir):
-    """Phase 1 worker for divefuzz method.
-    
-    File locations:
-      - Temp files (seeds, elf, gen.log, stat.json): work_dir
-      - Persistent logs (emu.log): _results_dir/logs/
-    """
-    global _run_counter, _total_instrs, _first_gen_start_time
-    
-    # Create logs directory in results_dir for persistent emu logs
-    logs_dir = _results_dir / 'logs'
-    os.makedirs(logs_dir, exist_ok=True)
-    
-    # Temp directories in work_dir
-    shared_out_dir = work_dir / 'seeds'
-    shared_elf_dir = work_dir / 'elf_file'
-    shared_mutate_dir = work_dir / 'mutate'
-    shared_mutate_elf_dir = work_dir / 'mutate' / 'elf_file'
-    os.makedirs(shared_out_dir, exist_ok=True)
-    os.makedirs(shared_elf_dir, exist_ok=True)
-    os.makedirs(shared_mutate_dir, exist_ok=True)
-    os.makedirs(shared_mutate_elf_dir, exist_ok=True)
-    
-    xor_cache_file = work_dir / 'xor_cache.json'
-    if not xor_cache_file.exists():
-        with open(xor_cache_file, 'w') as f:
-            json.dump({}, f)
-    
-    num_warps = args.num_genwarps_per_block if args.arch == 'ventus' else arch_config.get('vortex_nr_warps_per_core', 4)
-    
-    while not _stop_event.is_set():
-        if check_stop_conditions(args.target_instr_count, args.target_time):
-            break
-        
-        with _stats_lock:
-            seed_id = _run_counter
-            _run_counter += 1
-
-        sim_start = time.time()
-        with _stats_lock:
-            if _first_gen_start_time is None:
-                _first_gen_start_time = sim_start
-                with _phase1_lock:
-                    if _phase1_results:
-                        _phase1_results.first_gen_start_time = sim_start
-        
-        # Persistent gen log in results_dir/logs/, temp output_json in work_dir
-        gen_log = logs_dir / f'seed_{seed_id}_gen.log'
-        output_json = work_dir / f'gen_{seed_id}.json'
-        bug_filter_json_str = get_bug_filter_path_if_exists(work_dir)
-        
-        wrapper_cmd = [
-            sys.executable, str(wrapper_script),
-            '--divefuzz-dir', str(divefuzz_dir),
-            '--seed-id', str(seed_id),
-            '--instr-number', str(args.divefuzz_seed_size),
-            '--arch', args.arch,
-            '--xlen', str(args.xlen),
-            '--out-dir', str(shared_out_dir),
-            '--elf-dir', str(shared_elf_dir),
-            '--xor-cache-file', str(xor_cache_file),
-            '--output-json', str(output_json),
-            '--num-warps-per-core', str(num_warps),
-            '--num-threads-per-warp', str(arch_config.get('nr_threads_per_warp', 4))
-        ]
-        
-        if args.arch == 'vortex':
-            wrapper_cmd += ['--vortex-max-num-barrier', str(arch_config.get('num_barriers', 4)),
-                            '--vortex-max-barrier-count', str(num_warps),
-                            '--vortex-cores-per-clusters', str(arch_config['vortex_nr_cores_per_cluster'])]
-
-        if bug_filter_json_str:
-            wrapper_cmd.extend([
-                '--disable-default-bug-filtering',
-                '--bug-filter-json', bug_filter_json_str,
-            ])
-        
-        if args.disable_eliminate:
-            wrapper_cmd.append('--disable-eliminate')
-        
-        rc_gen, gen_time = run_command(wrapper_cmd, str(gen_log), timeout=EMULATOR_TIMEOUT_SECONDS,
-                                 record_logs=args.record_logs)
-        
-        if rc_gen != 0 or not output_json.exists():
-            continue
-        
-        try:
-            with open(output_json, 'r') as f:
-                gen_result = json.load(f)
-            if not gen_result.get('success'):
-                continue
-            asm_file = Path(gen_result['asm_file']) if gen_result.get('asm_file') else None
-            elf_path = Path(gen_result['elf_file']) if gen_result.get('elf_file') else None
-            total_count = gen_result.get('instr_count', 0)
-            with _stats_lock:
-                _total_instrs += total_count
-        except Exception:
-            continue
-        
-        if elf_path and elf_path.exists():
-            # Persistent emu log in results_dir/logs/
-            emu_log = logs_dir / f'seed_{seed_id}_emu.log'
-            # Temp stat.json in work_dir
-            stat_json = work_dir / f'seed_{seed_id}.stat.json'
-            
-            emu_cmd = [
-                emu_exe, '--elf', str(elf_path),
-                '--elf-num-genblocks', str(args.num_genblocks),
-                '--elf-num-genwarps-per-block', str(args.num_genwarps_per_block),
-                '--elf-num-threads-per-warp', str(arch_config.get('nr_threads_per_warp', 4)),
-                '--stat-jsonfile', str(stat_json)
-            ]
-            if args.emulate:
-                emu_cmd.append('--emulate')
-            
-            # Run emulator and extract stats
-            emu_result = run_emulator_with_stats(
-                emu_cmd, emu_log, stat_json,
-                record_logs=args.record_logs
-            )
-            sim_end = time.time()
-            
-            # emu_log_path is relative to results_dir
-            rel_path = str(emu_log.relative_to(_results_dir))
-            record = TestRecord(
-                seed_id=seed_id,
-                emu_log_path=rel_path,
-                sim_start_time=sim_start,
-                sim_end_time=sim_end,
-                num_instrs=total_count,
-                emu_num_instrs=emu_result.emu_num_instrs,
-                success=emu_result.emu_success,
-                stat_json_data=emu_result.stat_json_data,
-                gen_time=gen_time,
-                emu_time=emu_result.emu_time,
-                program_construction_time_ms=gen_time * 1000.0,  # For divefuzz, all gen time is program construction
-                file_write_time_ms=0.0,
-                memory_check_time_ms=emu_result.memory_check_time_ms,
-                rtl_emu_time_ms=emu_result.rtl_emu_time_ms,
-            )
-            add_test_record(record)
-            
-            # Quick bug detect (no filter maintenance for divefuzz)
-            phase1_quick_bug_detect(emu_log, seed_id, work_dir, sim_end_time=sim_end)
-
-        if asm_file and asm_file.exists() and args.divefuzz_mutation_times > 0:
-            for mut_idx in range(args.divefuzz_mutation_times):
-                if _stop_event.is_set() or check_stop_conditions(args.target_instr_count, args.target_time):
-                    break
-
-                mut_log = logs_dir / f'seed_{seed_id}_mut_{mut_idx}_gen.log'
-                mut_output_json = work_dir / f'mutate_{seed_id}_mut_{mut_idx}.json'
-
-                mut_wrapper_cmd = [
-                    sys.executable, str(wrapper_script),
-                    '--divefuzz-dir', str(divefuzz_dir),
-                    '--seed-id', str(seed_id),
-                    '--arch', args.arch,
-                    '--xlen', str(args.xlen),
-                    '--out-dir', str(shared_out_dir),
-                    '--elf-dir', str(shared_elf_dir),
-                    '--xor-cache-file', str(xor_cache_file),
-                    '--output-json', str(mut_output_json),
-                    '--mutate',
-                    '--input-asm', str(asm_file),
-                    '--mutate-dir', str(shared_mutate_dir),
-                    '--mutate-elf-dir', str(shared_mutate_elf_dir),
-                    '--mutation-idx', str(mut_idx),
-                    '--num-warps-per-core', str(num_warps),
-                    '--num-threads-per-warp', str(arch_config.get('nr_threads_per_warp', 4))
-                ]
-
-                if args.arch == 'vortex':
-                    mut_wrapper_cmd += ['--vortex-max-num-barrier', str(arch_config.get('num_barriers', 4)),
-                                        '--vortex-max-barrier-count', str(num_warps),
-                                        '--vortex-cores-per-clusters', str(arch_config['vortex_nr_cores_per_cluster'])]
-
-                mut_bug_filter_json_str = get_bug_filter_path_if_exists(work_dir)
-                if mut_bug_filter_json_str:
-                    mut_wrapper_cmd.extend([
-                        '--disable-default-bug-filtering',
-                        '--bug-filter-json', mut_bug_filter_json_str,
-                    ])
-
-                if args.disable_eliminate:
-                    mut_wrapper_cmd.append('--disable-eliminate')
-
-                rc_mut, mut_time = run_command(mut_wrapper_cmd, str(mut_log), timeout=EMULATOR_TIMEOUT_SECONDS,
-                                               record_logs=args.record_logs)
-
-                if rc_mut != 0 or not mut_output_json.exists():
-                    continue
-
-                try:
-                    with open(mut_output_json, 'r') as f:
-                        mut_result = json.load(f)
-                    if not mut_result.get('success'):
-                        continue
-                    mut_elf_path = Path(mut_result['elf_file']) if mut_result.get('elf_file') else None
-                    mut_count = mut_result.get('instr_count', 0)
-                    with _stats_lock:
-                        _total_instrs += mut_count
-                except Exception:
-                    continue
-
-                if mut_elf_path and mut_elf_path.exists():
-                    mut_sim_start = time.time()
-                    mut_emu_log = logs_dir / f'seed_{seed_id}_mut_{mut_idx}_emu.log'
-                    mut_stat_json = work_dir / f'seed_{seed_id}_mut_{mut_idx}.stat.json'
-
-                    mut_emu_cmd = [
-                        emu_exe, '--elf', str(mut_elf_path),
-                        '--elf-num-genblocks', str(args.num_genblocks),
-                        '--elf-num-genwarps-per-block', str(args.num_genwarps_per_block),
-                        '--elf-num-threads-per-warp', str(arch_config.get('nr_threads_per_warp', 4)),
-                        '--stat-jsonfile', str(mut_stat_json)
-                    ]
-                    if args.emulate:
-                        mut_emu_cmd.append('--emulate')
-
-                    mut_emu_result = run_emulator_with_stats(
-                        mut_emu_cmd, mut_emu_log, mut_stat_json,
-                        record_logs=args.record_logs
-                    )
-                    mut_sim_end = time.time()
-
-                    rel_path = str(mut_emu_log.relative_to(_results_dir))
-                    record = TestRecord(
-                        seed_id=seed_id,
-                        emu_log_path=rel_path,
-                        sim_start_time=mut_sim_start,
-                        sim_end_time=mut_sim_end,
-                        num_instrs=mut_count,
-                        emu_num_instrs=mut_emu_result.emu_num_instrs,
-                        success=mut_emu_result.emu_success,
-                        stat_json_data=mut_emu_result.stat_json_data,
-                        gen_time=mut_time,
-                        emu_time=mut_emu_result.emu_time,
-                        program_construction_time_ms=mut_time * 1000.0,
-                        file_write_time_ms=0.0,
-                        memory_check_time_ms=mut_emu_result.memory_check_time_ms,
-                        rtl_emu_time_ms=mut_emu_result.rtl_emu_time_ms,
-                    )
-                    add_test_record(record)
-
-                    phase1_quick_bug_detect(mut_emu_log, seed_id, work_dir, sim_end_time=mut_sim_end)
-        
-        print(f"  {GREEN}Worker {worker_id}: seed {seed_id} done (base + {args.divefuzz_mutation_times} mutations){RESET}")
-        if seed_id % 10 == 0:
-            save_phase1_results(_results_dir)
-
-
-# =============================================================================
-# Phase 2: Bug Detection & Analysis (Idempotent)
-# =============================================================================
-
 def _print_phase2_summary(phase2: Phase2Results):
     """Print Phase2 summary to console."""
     print(f"\n{GREEN}=== Summary ==={RESET}")
@@ -1439,12 +1026,11 @@ def run_phase1(args, arch: str, xlen: int, fuzzgpu_dir: Path) -> Tuple[Path, Pat
     Returns:
         Tuple of (results_dir, work_dir) paths, or (None, None) on error.
     """
-    global _phase1_results, _bug_filter_set, _seed_counter, _run_counter
+    global _phase1_results, _bug_filter_set, _seed_counter
     global _first_gen_start_time, _total_instrs, _results_dir, _work_dir
     global _expected_bugs
     
     _seed_counter = args.start_seed
-    _run_counter = args.start_seed
     _first_gen_start_time = None
     _total_instrs = 0
     _bug_filter_set.clear()
@@ -1536,50 +1122,19 @@ def run_phase1(args, arch: str, xlen: int, fuzzgpu_dir: Path) -> Tuple[Path, Pat
     # Reset Random selection (will be initialized per-run in worker with current bug filter)
     global _random_selection
     _random_selection = None
-    if args.method == 'fuzzgpu':
-        print(f"{BLUE}Random selection enabled (per-run initialization){RESET}")
-        if not fuzz_exe:
-            print(f"{RED}fuzz_gpu not found{RESET}")
-            return None, None
-    
+    print(f"{BLUE}Random selection enabled (per-run initialization){RESET}")
+    if not fuzz_exe:
+        print(f"{RED}fuzz_gpu not found{RESET}")
+        return None, None
+
     try:
-        if args.method == 'fuzzgpu':
-            if not fuzz_exe:
-                print(f"{RED}fuzz_gpu not found{RESET}")
-                return None, None
-            with ThreadPoolExecutor(max_workers=args.jobs) as ex:
-                futs = [ex.submit(run_fuzzgpu_worker, args, i, fuzz_exe, emu_exe, work_dir, fuzzgpu_dir)
-                        for i in range(args.jobs)]
-                for f in as_completed(futs):
-                    try: f.result()
-                    except Exception as e: print(f"{RED}Error: {e}{RESET}")
-        
-        elif args.method == 'cascade':
-            cascade_dir = Path(args.cascade_dir) if args.cascade_dir else fuzzgpu_dir / 'baseline' / 'cascade-meta'
-            gen_script = cascade_dir / 'fuzzer' / 'do_genmanyelfs.py'
-            if not gen_script.exists():
-                print(f"{RED}Cascade gen not found: {gen_script}{RESET}")
-                return None, None
-            with ThreadPoolExecutor(max_workers=args.jobs) as ex:
-                futs = [ex.submit(run_cascade_worker, args, i, emu_exe, work_dir, gen_script, arch_config, fuzzgpu_dir)
-                        for i in range(args.jobs)]
-                for f in as_completed(futs):
-                    try: f.result()
-                    except Exception as e: print(f"{RED}Error: {e}{RESET}")
-        
-        elif args.method == 'divefuzz':
-            divefuzz_dir = Path(args.divefuzz_dir) if args.divefuzz_dir else fuzzgpu_dir / 'baseline' / 'DiveFuzz'
-            wrapper_script = script_dir / 'divefuzz_wrapper.py'
-            if not divefuzz_dir.exists() or not wrapper_script.exists():
-                print(f"{RED}DiveFuzz setup missing{RESET}")
-                return None, None
-            with ThreadPoolExecutor(max_workers=args.jobs) as ex:
-                futs = [ex.submit(run_divefuzz_worker, args, i, emu_exe, work_dir, divefuzz_dir, wrapper_script, arch_config, fuzzgpu_dir)
-                        for i in range(args.jobs)]
-                for f in as_completed(futs):
-                    try: f.result()
-                    except Exception as e: print(f"{RED}Error: {e}{RESET}")
-    
+        with ThreadPoolExecutor(max_workers=args.jobs) as ex:
+            futs = [ex.submit(run_fuzzgpu_worker, args, i, fuzz_exe, emu_exe, work_dir, fuzzgpu_dir)
+                    for i in range(args.jobs)]
+            for f in as_completed(futs):
+                try: f.result()
+                except Exception as e: print(f"{RED}Error: {e}{RESET}")
+
     except KeyboardInterrupt:
         print(f"{YELLOW}Interrupted{RESET}")
         _stop_event.set()
@@ -1661,7 +1216,7 @@ def main():
                         help='When used with --analyze, scan all subdirectories for phase1_results.json')
     
     # Phase 1 options
-    parser.add_argument('--method', type=str, choices=['fuzzgpu', 'cascade', 'divefuzz'])
+    parser.add_argument('--method', type=str, choices=['fuzzgpu'], default='fuzzgpu')
     parser.add_argument('--arch', type=str, choices=['ventus', 'vortex'], default='ventus')
     parser.add_argument('--xlen', type=int, choices=[32, 64], default=32)
     parser.add_argument('--all', action='store_true',
@@ -1684,14 +1239,6 @@ def main():
     parser.add_argument('--max-instrs-per-bb', type=int, default=500)
     parser.add_argument('--min-instrs-per-bb', type=int, default=1)
     
-    parser.add_argument('--cascade-dir', type=str, default=None)
-    parser.add_argument('--cascade-num-seeds', type=int, default=10)
-    parser.add_argument('--divefuzz-dir', type=str, default=None)
-    parser.add_argument('--divefuzz-seed-size', type=int, default=200)
-    parser.add_argument('--divefuzz-mutation-times', type=int, default=3,
-                        help='Number of mutations to run for each DiveFuzz generated seed')
-    parser.add_argument('--disable-eliminate', action='store_true', default=False,
-                        help='Disable elimination optimization for divefuzz (enabled by default)')
     parser.add_argument('--bug-complete-list', type=str, default=None,
                         help='JSON file with expected bugs. Stop when all expected bugs are found. Format: {"arch": {"xlen": ["bug1", "bug2", ...]}}')
     parser.add_argument('--results-subdir', type=str, default='fuzzing_results',
@@ -1710,8 +1257,6 @@ def main():
         return
     
     # Phase 1 + Phase 2
-    if not args.method:
-        parser.error('--method required for Phase 1')
     if not args.target_instr_count and not args.target_time:
         parser.error('--target-instr-count or --target-time required')
     
@@ -1731,6 +1276,4 @@ def main():
 
 
 if __name__ == '__main__':
-    from baseline import _cleanup_gen_emu_processes
-    _cleanup_gen_emu_processes()
     main()

@@ -2,9 +2,6 @@
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# 
-source "$SCRIPT_DIR/baseline_envs.sh"
-
 set -u
 
 SMOKE_DIR="$SCRIPT_DIR/smoke"
@@ -16,13 +13,13 @@ Usage: scripts/run_smoking_tests.sh [options]
 
 Options:
   --all           Run all smoking units (default)
-  --unit <name>   Run one unit, e.g. run_instr_complete_rate
+  --unit <name>   Run one unit, e.g. run_fuzzing
   --list          List available units
   --help, -h      Show this help
 
 Environment overrides:
   SMOKE_ARCH_XLEN_CONFIGS="ventus:32 vortex:64"
-  SMOKE_METHODS="fuzzgpu cascade divefuzz"
+  SMOKE_FUZZING_METHODS="fuzzgpu"
   NO_COLOR=1
 EOF
 }
@@ -97,6 +94,8 @@ while [ "$#" -gt 0 ]; do
       ;;
   esac
 done
+
+source "$SCRIPT_DIR/envs.sh" || exit 1
 
 SUITE_TOTAL_COUNT=0
 SUITE_PASS_COUNT=0

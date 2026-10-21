@@ -8,7 +8,6 @@ TARGET_INSTR_COUNT=100000000000 # basically unlimited
 TARGET_TIME=300
 JOBS=24
 SEED_MULTIPLIER=1000000 # Large multiplier to avoid seed overlap between runs
-DIVEFUZZ_MUTATION_TIMES=3
 
 # Start seed indices to scan (1-10)
 START_SEED_INDICES=(1 2 3 4 5 6 7 8 9 10)
@@ -23,8 +22,6 @@ ARCH_XLEN_CONFIGS=(
 # All available methods
 ALL_METHODS=(
     "fuzzgpu"
-    "cascade"
-    "divefuzz"
 )
 
 # Parse command line arguments
@@ -37,7 +34,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         --help|-h)
             echo "Usage: $0 [--method|-m <method>]"
-            echo "  --method, -m  Specify a single method to run (fuzzgpu, cascade, divefuzz)"
+            echo "  --method, -m  Specify a single method to run (fuzzgpu)"
             echo "                If not specified, all methods will be run."
             exit 0
             ;;
@@ -99,7 +96,7 @@ for arch_xlen in "${ARCH_XLEN_CONFIGS[@]}"; do
         echo "  Start Seed Index: $SEED_IDX (actual seed: $START_SEED)"
         echo "  ========================================"
         
-        # Run three methods
+        # Run FuzzGPU
         for METHOD in "${METHODS[@]}"; do
             echo "----------------------------------------"
             echo "Method: $METHOD, Start Seed: $START_SEED"

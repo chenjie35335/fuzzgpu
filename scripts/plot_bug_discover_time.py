@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Plot boxplots of bug first detection time across different methods.
+"""Plot boxplots of bug first detection time across FuzzGPU runs.
 
 Reads Phase 2 results from fuzzing_loop.py and creates boxplots showing
 the distribution of first_detection_time for each known bug.
 
 Bugs are grouped by (bug_name, arch, xlen).
-Different methods are distinguished by color and hatch pattern.
+Repeated FuzzGPU runs show the distribution of discovery times.
 """
 
 import json
@@ -45,19 +45,15 @@ OUTPUT_DIR = FUZZGPU_DIR / 'results' / 'plots'
 # Method colors and hatches
 METHOD_STYLES = {
     'fuzzgpu': {'color': '#ff7f0e', 'hatch': '///'},     # Orange, diagonal lines
-    'cascade': {'color': '#1f77b4', 'hatch': ''},       # Blue, no hatch
-    'divefuzz': {'color': '#2ca02c', 'hatch': '||||'},    # Green, cross hatch
 }
 
 # Method display name mapping
 METHOD_DISPLAY_NAMES = {
     'fuzzgpu': 'FuzzGPU',
-    'cascade': 'Cas.',
-    'divefuzz': 'D.F.',
 }
 
 # Method order for legend (fuzzgpu first)
-METHOD_ORDER = ['fuzzgpu', 'cascade', 'divefuzz']
+METHOD_ORDER = ['fuzzgpu']
 
 # Fallback styles for unknown methods
 DEFAULT_COLORS = ['#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f']
@@ -107,6 +103,8 @@ def load_phase2_results(results_dir: Path) -> List[Dict[str, Any]]:
         try:
             with open(phase2_file, 'r') as f:
                 data = json.load(f)
+                if data.get('method') != 'fuzzgpu':
+                    continue
                 data['_source_path'] = str(phase2_file)
                 all_results.append(data)
         except Exception as e:
@@ -541,7 +539,7 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(
-        description='Plot boxplots of bug first detection time across methods'
+        description='Plot boxplots of bug first detection time across FuzzGPU runs'
     )
     parser.add_argument(
         '--results-dir', type=str, default=str(RESULTS_DIR),
@@ -560,8 +558,8 @@ def main():
         help='Print summary statistics to console'
     )
     parser.add_argument(
-        '--methods', '-m', type=str, nargs='+', default=None,
-        help='Only show specified methods (e.g., --methods fuzzgpu cascade)'
+        '--methods', '-m', type=str, nargs='+', choices=['fuzzgpu'], default=None,
+        help='Only show specified methods (e.g., --methods fuzzgpu)'
     )
     parser.add_argument(
         '--table', '-t', type=str, choices=['csv', 'latex', 'markdown'], default=None,

@@ -11,16 +11,8 @@ source "$SMOKE_DIR/lib.sh"
 UNIT_NAME="run_fuzzing"
 RUN_SCRIPT="$PRJ_HOME/scripts/run_fuzzing.sh"
 FUZZING_SCRIPT="$PRJ_HOME/scripts/fuzzing_loop.py"
-DIVEFUZZ_WRAPPER="$PRJ_HOME/scripts/divefuzz_wrapper.py"
-CASCADE_GEN="$PRJ_HOME/baseline/cascade-meta/fuzzer/do_genmanyelfs.py"
-CASCADE_ENV="$PRJ_HOME/baseline/cascade-meta/env.sh"
-DIVEFUZZ_DIR="$PRJ_HOME/baseline/DiveFuzz"
-DIVEFUZZ_OPCODE_DICT="$DIVEFUZZ_DIR/fuzzer/generator/reg_analyzer/riscv-opcodes/instr_dict.json"
-
-# Cover the requested targets. run_fuzzing.sh currently comments divefuzz out,
-# but this smoke unit checks all supported methods.
 SMOKE_FUZZING_ARCH_XLEN_CONFIGS=${SMOKE_FUZZING_ARCH_XLEN_CONFIGS:-"ventus:32 vortex:64"}
-SMOKE_FUZZING_METHODS=${SMOKE_FUZZING_METHODS:-"fuzzgpu cascade divefuzz"}
+SMOKE_FUZZING_METHODS=${SMOKE_FUZZING_METHODS:-"fuzzgpu"}
 
 target_name() {
   local arch=$1
@@ -121,30 +113,6 @@ check_method_dependencies() {
       smoke_require_text "$target" "$FUZZING_SCRIPT" "'--disable-default-bug-filtering'" "fuzzgpu bug-filter mode"
       smoke_require_text "$target" "$FUZZING_SCRIPT" "'--bug-filter-json'" "fuzzgpu bug-filter arg"
       ;;
-    cascade)
-      smoke_require_file "$target" "$CASCADE_GEN" "cascade generator"
-      smoke_require_file "$target" "$CASCADE_ENV" "cascade environment script"
-      if [ -n "${CASCADE_ENV_SOURCED:-}" ]; then
-        smoke_pass "$target" "CASCADE_ENV_SOURCED is set"
-      else
-        smoke_fail "$target" "CASCADE_ENV_SOURCED is not set; source scripts/baseline_envs.sh before running cascade"
-      fi
-      smoke_require_text "$target" "$FUZZING_SCRIPT" "gen_script = cascade_dir / 'fuzzer' / 'do_genmanyelfs.py'" "cascade generator resolution"
-      smoke_require_text "$target" "$FUZZING_SCRIPT" "design_name = f\"{args.arch}{args.xlen}\"" "cascade vortex design-name mapping"
-      smoke_require_text "$target" "$FUZZING_SCRIPT" "'--num-warps-per-core'" "cascade num-warps arg"
-      smoke_require_text "$target" "$FUZZING_SCRIPT" "'--num-threads-per-warp'" "cascade num-threads arg"
-      ;;
-    divefuzz)
-      smoke_require_dir "$target" "$DIVEFUZZ_DIR" "DiveFuzz checkout"
-      smoke_require_file "$target" "$DIVEFUZZ_OPCODE_DICT" "DiveFuzz riscv-opcodes instruction dictionary"
-      smoke_require_file "$target" "$DIVEFUZZ_WRAPPER" "DiveFuzz wrapper"
-      smoke_require_text "$target" "$FUZZING_SCRIPT" "wrapper_script = script_dir / 'divefuzz_wrapper.py'" "DiveFuzz wrapper resolution"
-      smoke_require_text "$target" "$FUZZING_SCRIPT" "'--instr-number'" "DiveFuzz instr-number arg"
-      smoke_require_text "$target" "$FUZZING_SCRIPT" "'--xor-cache-file'" "DiveFuzz xor-cache arg"
-      smoke_require_text "$target" "$FUZZING_SCRIPT" "divefuzz_mutation_times" "DiveFuzz mutation config"
-      smoke_require_text "$target" "$DIVEFUZZ_WRAPPER" "allowed_ext_name = 'ventus'" "DiveFuzz ventus extension config"
-      smoke_require_text "$target" "$DIVEFUZZ_WRAPPER" "allowed_ext_name = 'vortex32' if is_rv32 else 'vortex64'" "DiveFuzz vortex XLEN extension config"
-      ;;
     *)
       smoke_fail "$target" "unknown method: $method"
       ;;
@@ -153,9 +121,6 @@ check_method_dependencies() {
   if [ "$arch" = "vortex" ]; then
     smoke_require_text "$target" "$FUZZING_SCRIPT" "'--vortex-max-num-barrier'" "vortex barrier-count config arg"
     smoke_require_text "$target" "$FUZZING_SCRIPT" "'--vortex-max-barrier-count'" "vortex max-barrier-count config arg"
-    if [ "$method" = "divefuzz" ]; then
-      smoke_require_text "$target" "$FUZZING_SCRIPT" "'--vortex-cores-per-clusters'" "vortex cores-per-cluster config arg"
-    fi
   fi
 }
 

@@ -97,41 +97,17 @@ RUN apt-get install -y python3-virtualenv && \
     virtualenv -p python3.10 /root/envs && \
     /root/envs/bin/python -m pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Install makeelf for cascade
-RUN git clone https://github.com/flaviens/makeelf && cd makeelf && git checkout finercontrol && /root/envs/bin/python -m pip install --no-cache-dir .
-
-# install deps for DiveFuzz
-RUN apt install -y libboost-regex-dev libboost-system-dev
-
 ################ copy source code
 COPY . /root/fuzzgpu
 
 WORKDIR /root/fuzzgpu
 
-# cascade meta
-COPY baseline/cascade-ventus /cascade-ventus
-COPY baseline/cascade-vortex32 /cascade-vortex32
-COPY baseline/cascade-vortex64 /cascade-vortex64
-
 # checkout Verilator
 RUN git submodule update --init --depth 1 --recursive thirdparty/verilator
 
-# python packages for Cascade & DiveFuzz & FuzzGPU scripts
+# python packages for FuzzGPU scripts
 RUN source /root/envs/bin/activate && \
     pip install --no-cache-dir -r requirements.txt
-
-# Generate the riscv-opcodes files used by DiveFuzz's hybrid encoder.
-# These files are generated artifacts and are intentionally not tracked.
-RUN source /root/envs/bin/activate && \
-    make -C baseline/DiveFuzz/fuzzer/generator/reg_analyzer/riscv-opcodes
-
-# build Spike for Cascade
-RUN cd baseline/cascade-meta/tools/riscv-isa-sim && \
-    mkdir -p build && \
-    cd build && \
-    ../configure --prefix=/root/prefix-cascade/riscv && \
-    make -j"$(nproc)" && \
-    make install
 
 # build ventus-env toolchain and env
 RUN apt install -y libtool
@@ -143,12 +119,5 @@ RUN cd targets/ventus-env && \
 # build all (ensure network connecting, it will download toolchain)
 RUN source /root/envs/bin/activate && \
     ./build.sh --all
-
-# DiveFuzz ref engines
-RUN source /root/envs/bin/activate && \
-    cd baseline/DiveFuzz/ref/gpu-isa-emulator && \
-    ./build_all.sh
-
-
 
 CMD ["/bin/zsh"]

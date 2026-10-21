@@ -1,4 +1,0 @@
-implements
-interconnect
-nettype
-soft
